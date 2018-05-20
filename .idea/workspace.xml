@@ -12,8 +12,6 @@
       <config projectName="local_map" targetName="roscpp_generate_messages_py" />
       <config projectName="local_map" targetName="gmock" />
       <config projectName="local_map" targetName="doxygen" />
-      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_py" />
-      <config projectName="local_map" targetName="sensor_msgs_generate_messages_lisp" />
       <config projectName="local_map" targetName="std_msgs_generate_messages_py" />
       <config projectName="local_map" targetName="gmock_main" />
       <config projectName="local_map" targetName="gtest" />
@@ -22,7 +20,7 @@
       <config projectName="local_map" targetName="roscpp_generate_messages_nodejs" />
       <config projectName="local_map" targetName="std_msgs_generate_messages_nodejs" />
       <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_eus" />
-      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_lisp" />
+      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_py" />
       <config projectName="local_map" targetName="cloud_filter" />
       <config projectName="local_map" targetName="roscpp_generate_messages_cpp" />
       <config projectName="local_map" targetName="download_extra_data" />
@@ -31,12 +29,14 @@
       <config projectName="local_map" targetName="std_msgs_generate_messages_eus" />
       <config projectName="local_map" targetName="geometry_msgs_generate_messages_py" />
       <config projectName="local_map" targetName="geometry_msgs_generate_messages_eus" />
+      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_lisp" />
       <config projectName="local_map" targetName="sensor_msgs_generate_messages_cpp" />
       <config projectName="local_map" targetName="geometry_msgs_generate_messages_nodejs" />
       <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_nodejs" />
       <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_cpp" />
-      <config projectName="local_map" targetName="sensor_msgs_generate_messages_py" />
+      <config projectName="local_map" targetName="sensor_msgs_generate_messages_lisp" />
       <config projectName="local_map" targetName="geometry_msgs_generate_messages_lisp" />
+      <config projectName="local_map" targetName="sensor_msgs_generate_messages_py" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -46,6 +46,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="369fccf7-5c59-4cb9-95ca-59a8fe7e42e5" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/src/cloud_node.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/cloud_filter.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/cloud_filter.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cloud_filter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cloud_filter.cpp" afterDir="false" />
     </list>
@@ -58,37 +61,96 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DockManager">
+    <window id="1">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file leaf-file-name="Indoor_segmentation.cpp" pinned="false" current-in-tab="true">
+              <entry file="file://$USER_HOME$/Downloads/节点识别/算法部分/Indoor_segmentation.cpp">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state relative-caret-position="912">
+                    <caret line="74" column="3" lean-forward="true" selection-start-line="74" selection-start-column="3" selection-end-line="74" selection-end-column="3" />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="cloud_filter.cpp" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="34" column="34" selection-start-line="34" selection-start-column="34" selection-end-line="34" selection-end-column="34" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="statistical_outlier_removal.h" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/include/pcl-1.7/pcl/filters/statistical_outlier_removal.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2860">
-              <caret line="130" column="6" selection-start-line="130" selection-start-column="6" selection-end-line="130" selection-end-column="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="cloud_filter.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/cloud_filter.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="11" column="26" selection-start-line="11" selection-start-column="26" selection-end-line="11" selection-end-column="26" />
+            <state relative-caret-position="359">
+              <caret line="48" column="16" selection-start-line="48" selection-start-column="13" selection-end-line="48" selection-end-column="16" />
+              <folding>
+                <element signature="e#109#126#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cloud_filter.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="836">
+              <caret line="38" lean-forward="true" selection-start-line="38" selection-end-line="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pcl_base.h" pinned="false" current-in-tab="false">
+        <entry file="file:///usr/include/pcl-1.7/pcl/pcl_base.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="143">
+              <caret line="94" column="6" selection-start-line="94" selection-start-column="6" selection-end-line="94" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cloud_node.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="506">
+              <caret line="23" column="15" lean-forward="true" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="15" />
+              <folding>
+                <element signature="e#42#78#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pcl_visualizer.h" pinned="false" current-in-tab="false">
+        <entry file="file:///usr/include/pcl-1.7/pcl/visualization/pcl_visualizer.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="217">
+              <caret line="831" column="8" selection-start-line="831" selection-start-column="8" selection-end-line="831" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="594">
+              <caret line="27" column="15" selection-start-line="27" selection-start-column="15" selection-end-line="27" selection-end-column="15" />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>cloudCallback</find>
+      <find>output_cloud</find>
+      <find>cloud</find>
+    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -96,6 +158,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/cloud_node.cpp" />
         <option value="$PROJECT_DIR$/include/cloud_filter.h" />
         <option value="$PROJECT_DIR$/src/cloud_filter.cpp" />
       </list>
@@ -121,7 +185,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -140,10 +203,17 @@
               <item name="local_map" type="462c0819:PsiDirectoryNode" />
               <item name="include" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="local_map" type="b2602c69:ProjectViewProjectNode" />
+              <item name="local_map" type="47feb1d3:ProjectViewModuleNode" />
+              <item name="local_map" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -251,33 +321,36 @@
       <updated>1526540051079</updated>
       <workItem from="1526540055170" duration="4693000" />
       <workItem from="1526609654322" duration="602000" />
+      <workItem from="1526611208512" duration="11761000" />
+      <workItem from="1526780920740" duration="10197000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5295000" />
+    <option name="totallyTimeSpent" value="27253000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-11" width="1857" height="1092" extended-state="6" />
+    <frame x="65" y="-4" width="1855" height="1084" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24959569" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14716981" />
       <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.32991803" />
       <window_info anchor="bottom" id="CMake" order="7" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.27868852" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39959016" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Messages" order="7" visible="true" weight="0.32991803" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Find" order="1" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -287,6 +360,71 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/include/cloud_filter.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="528">
+          <caret line="24" column="19" selection-start-line="24" selection-start-column="19" selection-end-line="24" selection-end-column="19" />
+          <folding>
+            <element signature="e#109#126#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="726">
+          <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/pcl-1.7/pcl/pcl_base.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2068">
+          <caret line="94" column="6" selection-start-line="94" selection-start-column="6" selection-end-line="94" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="594">
+          <caret line="27" column="15" selection-start-line="27" selection-start-column="15" selection-end-line="27" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1056">
+          <caret line="48" column="5" lean-forward="true" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
+          <folding>
+            <element signature="e#42#78#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="748">
+          <caret line="34" column="34" selection-start-line="34" selection-start-column="34" selection-end-line="34" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/pcl-1.7/pcl/filters/statistical_outlier_removal.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2860">
+          <caret line="130" column="6" selection-start-line="130" selection-start-column="6" selection-end-line="130" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/cloud_filter.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="11" column="26" selection-start-line="11" selection-start-column="26" selection-end-line="11" selection-end-column="26" />
+          <folding>
+            <element signature="e#109#126#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="748">
@@ -308,24 +446,72 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/cloud_filter.h">
+    <entry file="file:///usr/include/pcl-1.7/pcl/filters/filter_indices.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="11" column="26" selection-start-line="11" selection-start-column="26" selection-end-line="11" selection-end-column="26" />
+        <state relative-caret-position="187">
+          <caret line="101" column="17" lean-forward="true" selection-start-line="101" selection-start-column="17" selection-end-line="101" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="594">
+          <caret line="27" column="15" selection-start-line="27" selection-start-column="15" selection-end-line="27" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/pcl-1.7/pcl/visualization/pcl_visualizer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="831" column="8" selection-start-line="831" selection-start-column="8" selection-end-line="831" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file:///usr/include/pcl-1.7/pcl/filters/statistical_outlier_removal.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2860">
+        <state relative-caret-position="217">
           <caret line="130" column="6" selection-start-line="130" selection-start-column="6" selection-end-line="130" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/pcl-1.7/pcl/pcl_base.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="143">
+          <caret line="94" column="6" selection-start-line="94" selection-start-column="6" selection-end-line="94" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Downloads/节点识别/算法部分/Indoor_segmentation.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="912">
+          <caret line="74" column="3" lean-forward="true" selection-start-line="74" selection-start-column="3" selection-end-line="74" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/cloud_filter.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="359">
+          <caret line="48" column="16" selection-start-line="48" selection-start-column="13" selection-end-line="48" selection-end-column="16" />
+          <folding>
+            <element signature="e#109#126#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="34" column="34" selection-start-line="34" selection-start-column="34" selection-end-line="34" selection-end-column="34" />
+        <state relative-caret-position="836">
+          <caret line="38" lean-forward="true" selection-start-line="38" selection-end-line="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="23" column="15" lean-forward="true" selection-start-line="23" selection-start-column="15" selection-end-line="23" selection-end-column="15" />
+          <folding>
+            <element signature="e#42#78#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
