@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/visualization/pcl_visualizer.h>
@@ -19,6 +20,8 @@
 #include <pcl/search/search.h>
 #include <pcl/search/kdtree.h>
 #include <pcl/segmentation/region_growing.h>
+#include <pcl/kdtree/kdtree_flann.h>
+#include <pcl/surface/mls.h>
 
 class CloudProcess
 {
@@ -32,28 +35,27 @@ public:
     void process();
 
     /**
-     * deploy process function and show output_cloud
+     * deploy process function and show
      * To use this function, you must have a thread running  cloud_process.cloud_viewer->spinOnce(100)
      * Can not be used with any other show function in the same time
      */
-    void process_and_show_cloud();
-
-    /**
-     * deploy process function and show segmented cloud
-     * To use this function, you must have a thread running  cloud_process.cloud_viewer->spinOnce(100)
-     * Can not be used with any other show function in the same time
-     */
-    void process_and_show_result();
-
+    void process_and_show();
 
 
     /**
      * Global mat for cloud
      */
     pcl::PointCloud<pcl::PointXYZ> input_cloud;
+
     pcl::PointCloud<pcl::PointXYZ> output_cloud;
+
     std::vector<pcl::PointIndices> clusters; //clusters to store segmented indices
-    std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> colored_cloud_e;
+
+    std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> colored_cloud_e; //store cloud pieces
+
+    std::vector<pcl::PointIndices> vertical_clusters; //clusters to store vertical segmented indices, like walls
+
+    std::vector<pcl::PointIndices> horizontal_clusters; //clusters to store horizontal segmented indices, like roof, ground and surface of table
 
     /**
      * Cloud viewer
@@ -61,16 +63,12 @@ public:
     boost::shared_ptr<pcl::visualization::PCLVisualizer> cloud_viewer;
 
     /**
-     * Paremeters for filters
+     * Paremeters for filters or smoothers
      */
     double Normal_Radius;
 
-    struct Statistical_Outlier_Removal_Filter
-    {
-        bool Use;
-        int Mean_K;
-        double Stddev_Mul_Thresh;
-    }sor_f;
+    float Vertical_Normal_Limit;
+    float Horizontal_Normal_Limit_Sqr;
 
     struct Voxel_Grid_Filter
     {
@@ -79,6 +77,22 @@ public:
         float Leaf_Y;
         float Leaf_Z;
     }vg_f;
+
+    struct Statistical_Outlier_Removal_Filter
+    {
+        bool Use;
+        int Mean_K;
+        double Stddev_Mul_Thresh;
+    }sor_f;
+
+    struct Moving_Least_Squares_Reconstruction
+    {
+        bool Use;
+        bool Polynomial_Fit;
+        double Search_Radius;
+        float Dilation_Voxel_Size;
+        double Sqr_Gauss_Param;
+    }mls_r;
 
     struct Conditional_Euclidean_Clustering
     {
@@ -98,6 +112,7 @@ public:
         float Smoothness_Threshold;
         float Curvature_Threshold;
     }rg_s;
+
 
 private:
 
@@ -133,7 +148,19 @@ private:
      */
     void viewPointXYZRGBPtr(std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> clouds_Ptr);
 
+    /**
+     * deploy process function and show output_cloud
+     * To use this function, you must have a thread running  cloud_process.cloud_viewer->spinOnce(100)
+     * Can not be used with any other show function in the same time
+     */
+    void process_and_show_cloud();
 
+    /**
+     * deploy process function and show segmented cloud
+     * To use this function, you must have a thread running  cloud_process.cloud_viewer->spinOnce(100)
+     * Can not be used with any other show function in the same time
+     */
+    void process_and_show_result();
 };
 
 #endif //LOCAL_MAP_CLOUD_FILTER_H

@@ -69,7 +69,7 @@ void read_cloud_process(string path)
     reader.read (path, input_cloud);
 
     cloud_process.input_cloud = input_cloud;
-    cloud_process.process_and_show_result(); //must be used with cloud_process.cloud_viewer->spinOnce(100)
+    cloud_process.process_and_show(); //must be used with cloud_process.cloud_viewer->spinOnce(100)
 }
 
 /* @function main */
