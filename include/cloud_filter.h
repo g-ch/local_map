@@ -58,6 +58,11 @@ public:
     void freespace_obstacle_split(pcl::PointCloud<pcl::PointXYZI>::Ptr cloud, pcl::PointCloud<pcl::PointXYZ>::Ptr free_space_cloud, pcl::PointCloud<pcl::PointXYZ>::Ptr obstacle_cloud, float threshold);
 
     /**
+     * NOTE!!!  To do
+     * Most variables should be private and only have public functions to read them
+     */
+
+    /**
      * Global mat for cloud
      */
     /// Only obstacle cloud, input
@@ -102,17 +107,34 @@ public:
      * 0: with roof and ground
      * 1: with only roof
      * 2: with only ground
-     * 3: with no roof nor ground
-     * 4: with roof and artificial ground
-     * 5: with ground and artificial roof
-     * 6: with artificial roof and artificial ground
+     * 3: without roof or ground
+     * 4: with artificial roof, but without ground
+     * 5: with artificial ground, but without roof
+     * 6: with roof and artificial ground
+     * 7: with ground and artificial roof
+     * 8: with artificial roof and artificial ground
      */
     int horizontal_structure_type;
+
+    /**
+     * Parameters to represent the z position of roof and ground
+     */
+    float upper_bound;
+    float lower_bound;
+    double roof_height;
+    double ground_height;
+    double space_height;
 
     /**
      * Cloud viewer
      */
     boost::shared_ptr<pcl::visualization::PCLVisualizer> cloud_viewer;
+
+    /**
+     * Parameters about the robot
+     */
+    float robot_upper_height; /// Distance from the camera to the top of the robot
+    float robot_lower_height; /// Distance from the camera to the bottom of the robot
 
     /**
      * Parameters for filters or smoothers

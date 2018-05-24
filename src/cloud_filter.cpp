@@ -29,7 +29,6 @@ bool customRegionGrowing (const pcl::PointNormal& point_a, const pcl::PointNorma
 CloudProcess::CloudProcess()
 {
     /// Area size. Should be the same as local "ewok_ring_buffer" map
-    /// NOTE: Area_Length / Voxel_Length should be less than 64
     Area_Length = 6.4;
     Voxel_Length = 0.1;
 
@@ -37,6 +36,8 @@ CloudProcess::CloudProcess()
     fs_min_val = 0.5;
 
     /// Voxel_Grid_Filter
+    /// NOTE: Maximum cloud points number after this down sampling filter is 65536. You know why.
+    /// Change on int data type is not suggested. Because it would be too slow even if you change the data type to avoid mistake
     vg_f.Use = false;
     vg_f.Leaf_X = 0.15;
     vg_f.Leaf_Y = 0.15;
@@ -67,7 +68,8 @@ CloudProcess::CloudProcess()
     ce_c.Point_Size_Max_Dividend = 3;
 
     /// Region_Growing_Segmentation
-    rg_s.Use = true;
+    /// Note: these parameters need to be tuned carefully later !!!!
+    rg_s.Use = false;
     rg_s.Point_Size_Min_Dividend = 500;
     rg_s.Point_Size_Max_Dividend = 3;
     rg_s.Number_Of_Neighbours = 72; //Important
@@ -75,6 +77,9 @@ CloudProcess::CloudProcess()
     rg_s.Curvature_Threshold = 2.0; //1.4; //Important
     rg_s.Indice_Size_Threshold = 30; //To remove clusters with too few points
 
+    /// Distance from the camera to the top \ bottom of the robot
+    robot_upper_height = 0.3f;
+    robot_lower_height = 0.3f;
 }
 
 CloudProcess::~CloudProcess()
@@ -251,7 +256,8 @@ void CloudProcess::filter_process()
         {
 
             ///*3.1 Plane clustering by normals*
-            /***NOTE: Consider to use RANSAC plan fitting to get normal in one cluster
+            /***NOTE:  To do
+             * Consider to use RANSAC plan fitting to get normal in one cluster
              * rather than calculate average normal of normals calculated before
             */
             int plane_type; //0: vertical; 1: horizontal, 2:others
@@ -292,6 +298,7 @@ void CloudProcess::filter_process()
                 plane_type = 2;
 
             ///*3.2 Give different clusters different colors to show later*
+            /// Can be removed to run faster
             ///Add one cluster ptr
             colored_cloud_e.push_back((new pcl::PointCloud<pcl::PointXYZRGB>)->makeShared());
             counter = 0;
@@ -347,7 +354,19 @@ void CloudProcess::filter_process()
     ///*4. Process all vertical and  horizontal clusters to find or make a roof and a ground *
     /// Now, it is about logic :)  See specific functions
 
+    if(rg_s.Use)
+    {
+        vertical_clusters_process();
+        horizontal_clusters_process();
 
+        space_height = roof_height - ground_height;
+
+        std::cout<<"space_height = " << space_height<<std::endl;
+        std::cout<<"roof_height = " << roof_height<<std::endl;
+        std::cout<<"ground_height = " << ground_height<<std::endl;
+        std::cout<<"Space type = (vertical, horizontal) = (" << vertical_structure_type <<", "<< horizontal_structure_type <<")"<< std::endl;
+
+    }
 
     std::cout<<"Process finished"<<std::endl;
     std::cout<<output_cloud<<std::endl;
@@ -382,19 +401,23 @@ void CloudProcess::process_cloud_all()
     /// Split freespace and obstacle
     freespace_obstacle_split(input_cloud_all_ptr, free_space_ptr, obstacle_ptr, fs_min_val);
     pcl::copyPointCloud(*obstacle_ptr, input_cloud);
+
+
     filter_process_and_show();
+
+
     two_dimension_map_generate();
 }
 
 void CloudProcess::two_dimension_map_generate()
 {
     /// NOTE: x, y, z values in "input_cloud_all" should all be with in [0, Area_Length]
-    ///       if not, please transform the coordinate by cutting the center position
+    ///       if not, please transform the coordinate by cutting the center position, where the robot is.
     int length = (int) (Area_Length / Voxel_Length);
     std::cout << "***Length = " << length <<std::endl;
     cv::Mat map(length, length, CV_8UC1, cv::Scalar(0));
-    cv::Mat map_ob(length, length, CV_8UC1, cv::Scalar(0)); /// NOTE: Area_Length / Voxel_Length should be less than 64
-    cv::Mat map_fs(length, length, CV_8UC1, cv::Scalar(0)); /// NOTE: Area_Length / Voxel_Length should be less than 64
+    cv::Mat map_ob(length, length, CV_8UC1, cv::Scalar(0));
+    cv::Mat map_fs(length, length, CV_8UC1, cv::Scalar(0));
 
     input_cloud_all_ptr = input_cloud_all.makeShared();
 
@@ -410,6 +433,11 @@ void CloudProcess::two_dimension_map_generate()
             map_ob.ptr<unsigned char>((int)(input_cloud_all_ptr->points[i].x / Voxel_Length))[(int)(input_cloud_all_ptr->points[i].y / Voxel_Length)] += 1;
         }
     }
+
+
+    /**
+     * To do next: 2D map with processed points
+     */
 
 //    for(int i = 0; i < length; i++) /// row
 //    {
@@ -436,12 +464,349 @@ void CloudProcess::vertical_clusters_process()
     //vertical_clusters
     output_cloud_ptr = output_cloud.makeShared();
 
+    if(vertical_clusters.size() == 0)
+    {
+        vertical_structure_type = 4; /// found no walls
+        return;
+    } else
+    {
+        /// Find the lowest and the highest point
+        upper_bound = 0.f;
+        lower_bound = Area_Length;
+        for(int i = 0; i < vertical_clusters.size(); i++)
+        {
+            for(int j = 0; j < vertical_clusters[i].indices.size(); j++)
+            {
+                float z = output_cloud_ptr->points[vertical_clusters[i].indices[j]].z;
+                if(z > upper_bound) upper_bound = z;
+                if(z < lower_bound) lower_bound = z;
+            }
+        }
+
+        /// Set vertical_structure_type
+        ///NOTE: Sometimes the camera view angle is too small to reach the Area_Length height in a cubic local map
+        ///      In that case, change a better camera is suggested, but you can also narrow the bound range below. Eg: 0.2-0.8
+        if(upper_bound < 0.9 * Area_Length)
+        {
+            if(lower_bound > 0.1 * Area_Length)
+                vertical_structure_type = 0;  /// found walls with upper and lower bounds (eg: ordinary hall)
+            else
+                vertical_structure_type = 1;  /// found walls with only upper bound
+
+        } else if(lower_bound > 0.1 * Area_Length)
+        {
+            vertical_structure_type = 2; /// found walls with only lower bound
+        } else
+        {
+            vertical_structure_type = 3; /// found walls without bounds
+        }
+        return;
+    }
+
 }
 
-void CloudProcess::horizontal_clusters_process()
+void CloudProcess::horizontal_clusters_process()  /// Note: Can only be excuted after vertical_clusters_process()
 {
     //horizontal_clusters
     output_cloud_ptr = output_cloud.makeShared();
+
+    if(horizontal_clusters.size() == 0) /// No real horizontal plain
+    {
+        switch(vertical_structure_type)
+        {
+            case 0: /// Found walls with upper and lower bounds
+            {
+                roof_height = upper_bound;
+                ground_height = lower_bound;
+                horizontal_structure_type = 8; /// with artificial roof and artificial ground
+                break;
+            }
+
+            case 1: /// found walls with only upper bound
+            {
+                roof_height = upper_bound;
+                ground_height = 0.f;
+                horizontal_structure_type = 4; /// with artificial roof, but without ground
+                break;
+            }
+
+            case 2: /// found walls with only lower bound
+            {
+                roof_height = Area_Length;
+                ground_height = lower_bound;
+                horizontal_structure_type = 5; /// with artificial ground, but without roof
+                break;
+            }
+
+            case 3: ///found walls without bounds
+            {
+                roof_height = Area_Length;
+                ground_height = 0.f;
+                horizontal_structure_type = 3; /// without roof or ground
+                break;
+            }
+            default: /// 4: found no walls
+            {
+                roof_height = Area_Length;
+                ground_height = 0.f;
+                horizontal_structure_type = 3; /// without roof or ground
+                break;
+            }
+        }
+
+    }
+    else /// Found real horizontal plain
+    {
+
+        /// Calculate average height for plane in each horizontal clusters
+        double horizontal_plain_heights[horizontal_clusters.size()]; /// Store average height
+        int points_number_plain[horizontal_clusters.size()]; /// Store points number in each cluster
+
+        for(int i = 0; i < horizontal_clusters.size(); i++)
+        {
+            points_number_plain[i] = horizontal_clusters[i].indices.size();
+            double z_acc = 0.0;
+            for(int j = 0; j < horizontal_clusters[i].indices.size(); j++)
+            {
+                z_acc += output_cloud_ptr->points[horizontal_clusters[i].indices[j]].z;
+            }
+            horizontal_plain_heights[i] = z_acc / horizontal_clusters[i].indices.size();
+        }
+
+        /// Find or create a roof and a ground plane
+        float search_roof_height, search_ground_height;
+
+        switch(vertical_structure_type)
+        {
+            /// Found walls with upper and lower bounds
+            case 0:
+            {
+                ///* In this case, treat mean plains' height as roof or ground height
+                /// if those plains can be found in a reasonable range defined by vertical bounds *
+                /// Otherwise we create artificial roof or ground *
+                search_roof_height = upper_bound - 0.1 * Area_Length;
+                search_ground_height = lower_bound + 0.1 * Area_Length;
+
+                bool found_roof = false;
+                bool found_ground = false;
+
+                /// Variables for weighted mean
+                double roof_height_acc = 0.0;
+                int roof_number_acc = 0;
+                double ground_height_acc = 0.0;
+                int ground_number_acc = 0;
+
+                for(int i = 0; i < horizontal_clusters.size(); i++)
+                {
+                    if(horizontal_plain_heights[i] > search_roof_height)
+                    {
+                        found_roof = true;
+                        roof_height_acc += horizontal_plain_heights[i] * points_number_plain[i];
+                        roof_number_acc += points_number_plain[i];
+                    }
+                    else if(horizontal_plain_heights[i] < search_ground_height)
+                    {
+                        found_ground = true;
+                        ground_height_acc += horizontal_plain_heights[i] * points_number_plain[i];
+                        ground_number_acc += points_number_plain[i];
+                    }
+                }
+
+                if(found_roof && found_ground)
+                {
+                    roof_height = roof_height_acc / roof_number_acc;
+                    ground_height = ground_height_acc / ground_number_acc;
+                    horizontal_structure_type = 0; /// with roof and ground
+                }
+                else if(found_roof)
+                {
+                    roof_height = roof_height_acc / roof_number_acc;
+                    ground_height = lower_bound;
+                    horizontal_structure_type = 6; /// with roof and artificial ground
+                }
+                else if(found_ground)
+                {
+                    roof_height = upper_bound;
+                    ground_height = ground_height_acc / ground_number_acc;
+                    horizontal_structure_type = 7; /// with ground and artificial roof
+                }
+                else
+                {
+                    roof_height = upper_bound;
+                    ground_height = lower_bound;
+                    horizontal_structure_type = 8; /// with artificial roof and artificial ground
+                }
+
+                break;
+            }
+
+            /// found walls with only upper bound
+            case 1:
+            {
+                ///* In this case, treat mean plains' height as roof height
+                /// if those plains can be found in a reasonable range defined by vertical bounds *
+                /// Otherwise we create artificial roof*
+
+                search_roof_height = upper_bound - 0.1 * Area_Length;
+
+                bool found_roof = false;
+
+                /// Variables for weighted mean
+                double roof_height_acc = 0.0;
+                int roof_number_acc = 0;
+
+
+                for(int i = 0; i < horizontal_clusters.size(); i++)
+                {
+                    if(horizontal_plain_heights[i] > search_roof_height)
+                    {
+                        found_roof = true;
+                        roof_height_acc += horizontal_plain_heights[i] * points_number_plain[i];
+                        roof_number_acc += points_number_plain[i];
+                    }
+                }
+
+                if(found_roof)
+                {
+                    roof_height = roof_height_acc / roof_number_acc;
+                    ground_height = 0.0;
+                    horizontal_structure_type = 1; /// with only roof
+                }
+
+                else
+                {
+                    roof_height = upper_bound;
+                    ground_height = 0.0;
+                    horizontal_structure_type = 4; /// with artificial roof, but without ground
+                }
+                break;
+            }
+
+            /// found walls with only lower bound
+            case 2:
+            {
+                ///* In this case, treat mean plains' height as ground height
+                /// if those plains can be found in a reasonable range defined by vertical bounds *
+                /// Otherwise we create artificial ground *
+
+
+                search_ground_height = lower_bound + 0.1 * Area_Length;
+
+                bool found_ground = false;
+
+                /// Variables for weighted mean
+                double ground_height_acc = 0.0;
+                int ground_number_acc = 0;
+
+                for(int i = 0; i < horizontal_clusters.size(); i++)
+                {
+                    if(horizontal_plain_heights[i] < search_ground_height)
+                    {
+                        found_ground = true;
+                        ground_height_acc += horizontal_plain_heights[i] * points_number_plain[i];
+                        ground_number_acc += points_number_plain[i];
+                    }
+                }
+
+                if(found_ground)
+                {
+                    roof_height = Area_Length;
+                    ground_height = ground_height_acc / ground_number_acc;
+                    horizontal_structure_type = 2; /// with only ground
+                }
+                else
+                {
+                    roof_height = Area_Length;
+                    ground_height = lower_bound;
+                    horizontal_structure_type = 5; /// with artificial ground, but without roof
+                }
+                break;
+            }
+
+            ///found walls without bounds
+            case 3:
+            {
+                ///* In this case , we just consider it as a place with high walls and the depth camera
+                /// can not see the ground or the roof *
+                ///* What if the roof is not like a "---___" with height change??
+                /// Oh. We just consider the higher part then. The drone won't use this map to avoid collision
+
+                roof_height = Area_Length;
+                ground_height = 0.0;
+                horizontal_structure_type = 3; /// without roof or ground
+
+                break;
+            }
+
+            /// 4: found no walls
+            default:
+            {
+                ///* This means that the drone is in a large room where the depth camera can not reach the walls
+                ///* but it can reach the roof or ground or both
+                ///* In this case , we just treat the weighted average plane height over the collision height of
+                ///  the drone as roof. The ground is similarly defined. *
+                ///* What if there are walls but they none of them are detected?
+                ///  Then you really need to consider change you camera or your test environment. :) *
+
+                search_roof_height = Area_Length / 2 + robot_upper_height;
+                search_ground_height =  Area_Length / 2 + robot_lower_height;
+
+                bool found_roof = false;
+                bool found_ground = false;
+
+                /// Variables for weighted mean
+                double roof_height_acc = 0.0;
+                int roof_number_acc = 0;
+                double ground_height_acc = 0.0;
+                int ground_number_acc = 0;
+
+                for(int i = 0; i < horizontal_clusters.size(); i++)
+                {
+                    if(horizontal_plain_heights[i] > search_roof_height)
+                    {
+                        found_roof = true;
+                        roof_height_acc += horizontal_plain_heights[i] * points_number_plain[i];
+                        roof_number_acc += points_number_plain[i];
+                    }
+                    else if(horizontal_plain_heights[i] < search_ground_height)
+                    {
+                        found_ground = true;
+                        ground_height_acc += horizontal_plain_heights[i] * points_number_plain[i];
+                        ground_number_acc += points_number_plain[i];
+                    }
+                }
+
+                if(found_roof && found_ground)
+                {
+                    roof_height = roof_height_acc / roof_number_acc;
+                    ground_height = ground_height_acc / ground_number_acc;
+                    horizontal_structure_type = 0; /// with roof and ground
+                }
+                else if(found_roof)
+                {
+                    roof_height = roof_height_acc / roof_number_acc;
+                    ground_height = 0.0;
+                    horizontal_structure_type = 1; /// with only roof
+                }
+                else if(found_ground)
+                {
+                    roof_height = Area_Length;
+                    ground_height = ground_height_acc / ground_number_acc;
+                    horizontal_structure_type = 2; /// with only ground
+                }
+                else
+                {
+                    roof_height = Area_Length;
+                    ground_height = 0.0;
+                    horizontal_structure_type = 3; /// without roof or ground
+                }
+
+
+                break;
+            }
+        }
+    }
+
 }
 
 
