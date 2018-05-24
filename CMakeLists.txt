@@ -32,9 +32,11 @@ catkin_package(
 find_package(PCL REQUIRED)
 add_definitions(${PCL_DEFINITIONS})
 
+find_package(OpenCV REQUIRED)
 
+include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${PCL_INCLUDE_DIRS})
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(cloud_filter src/cloud_filter.cpp src/cloud_node.cpp)
-target_link_libraries(cloud_filter ${catkin_LIBRARIES}  ${PCL_LIBRARIES})
+add_executable(cloud_filter src/cloud_filter.cpp src/cloud_node.cpp include/gvg.h)
+target_link_libraries(cloud_filter ${catkin_LIBRARIES}  ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})

@@ -6,6 +6,13 @@
 #include "boost/bind.hpp"
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud_ptr( new pcl::PointCloud<pcl::PointXYZ>);
+pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud_ptr( new pcl::PointCloud<pcl::PointXYZ>);
+
+pcl::PointCloud<pcl::PointXYZI>::Ptr input_cloud_all_ptr( new pcl::PointCloud<pcl::PointXYZI>);
+
+pcl::PointCloud<pcl::PointXYZ>::Ptr free_space_ptr( new pcl::PointCloud<pcl::PointXYZ>);
+pcl::PointCloud<pcl::PointXYZ>::Ptr obstacle_ptr( new pcl::PointCloud<pcl::PointXYZ>);
+
 
 bool customRegionGrowing (const pcl::PointNormal& point_a, const pcl::PointNormal& point_b, float squared_distance)
 {
@@ -21,11 +28,19 @@ bool customRegionGrowing (const pcl::PointNormal& point_a, const pcl::PointNorma
 
 CloudProcess::CloudProcess()
 {
+    /// Area size. Should be the same as local "ewok_ring_buffer" map
+    /// NOTE: Area_Length / Voxel_Length should be less than 64
+    Area_Length = 6.4;
+    Voxel_Length = 0.1;
+
+    /// Threshold to treat as free space
+    fs_min_val = 0.5;
+
     /// Voxel_Grid_Filter
-    vg_f.Use = true;
-    vg_f.Leaf_X = 0.2;
-    vg_f.Leaf_Y = 0.2;
-    vg_f.Leaf_Z = 0.2;
+    vg_f.Use = false;
+    vg_f.Leaf_X = 0.15;
+    vg_f.Leaf_Y = 0.15;
+    vg_f.Leaf_Z = 0.15;
 
     /// Statistical_Outlier_Removal_Filter
     sor_f.Use = true;
@@ -35,14 +50,14 @@ CloudProcess::CloudProcess()
     /// Neighbour radius for normal calculation
     Normal_Radius = 0.6;
 
-    ///Limit to judge if a standardized normal a vertical or horizontal normal
+    /// Limit to judge if a standardized normal a vertical or horizontal normal
     Vertical_Normal_Limit = 0.2f; //dot multiply
     Horizontal_Normal_Limit_Sqr = 0.0225f; //cross multiply
 
     /// Moving_Least_Squares_Reconstruction
     mls_r.Use = true;
-    mls_r.Search_Radius = 1.0;
-    mls_r.Dilation_Voxel_Size = 0.3; //Important
+    mls_r.Search_Radius = 1.0;  //1.5;//0.8;
+    mls_r.Dilation_Voxel_Size = 0.2; //Important
     mls_r.Polynomial_Fit = true;
 
     /// Conditional_Euclidean_Clustering
@@ -57,7 +72,8 @@ CloudProcess::CloudProcess()
     rg_s.Point_Size_Max_Dividend = 3;
     rg_s.Number_Of_Neighbours = 72; //Important
     rg_s.Smoothness_Threshold = 5.0 / 180.0 * M_PI;
-    rg_s.Curvature_Threshold = 1.4; //Important
+    rg_s.Curvature_Threshold = 2.0; //1.4; //Important
+    rg_s.Indice_Size_Threshold = 30; //To remove clusters with too few points
 
 }
 
@@ -66,7 +82,7 @@ CloudProcess::~CloudProcess()
 
 }
 
-void CloudProcess::process()
+void CloudProcess::filter_process()
 {
     std::cout<<"start process"<<std::endl;
 
@@ -77,8 +93,7 @@ void CloudProcess::process()
     pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals (new pcl::PointCloud<pcl::PointNormal>);
     /// Definition of normals, will be calculated Normal Estimation
     pcl::PointCloud<pcl::Normal>::Ptr normals (new pcl::PointCloud<pcl::Normal>);
-    /// Definition of output_cloud ptr
-    pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud_ptr( new pcl::PointCloud<pcl::PointXYZ>);
+    /// Link of output_cloud ptr
     output_cloud_ptr = output_cloud.makeShared();
 
     ///*1. First we filter*
@@ -93,6 +108,9 @@ void CloudProcess::process()
         vg.setLeafSize (vg_f.Leaf_X, vg_f.Leaf_Y, vg_f.Leaf_Z);
         vg.filter (output_cloud);
         std::cout<<"VoxelGrid filter"<<std::endl<<output_cloud<<std::endl;
+    } else
+    {
+        pcl::copyPointCloud(input_cloud, output_cloud);
     }
 
     /// Statistical Outlier Removal Filter, will cut number and remove outpoints, may not be useful
@@ -195,8 +213,27 @@ void CloudProcess::process()
 
         reg.extract (clusters);
 
+        ///Remove too small indices
+        int number_of_valid_points = 0;
+        for(int i = 0; i < clusters.size (); i++)
+        {
+            std::vector<pcl::PointIndices>::iterator it;
+            //clusters.begin(); i < clusters.end();
+            if(clusters[i].indices.size() < rg_s.Indice_Size_Threshold)
+            {
+                std::vector<pcl::PointIndices>::iterator it = clusters.begin() + i;
+                clusters.erase(it);
+            }
+            else
+                number_of_valid_points += clusters[i].indices.size();
+        }
+
         std::cout << "Number of clusters is equal to " << clusters.size () << std::endl;
+        std::cout << "Number of valid points is equal to " << number_of_valid_points << std::endl;
         std::cout << "First cluster has " << clusters[0].indices.size () << " points." << std::endl;
+        std::cout << "First point position x = " << output_cloud_ptr->points[clusters[0].indices[1]].x <<std::endl;
+        std::cout << "First point position y = " << output_cloud_ptr->points[clusters[0].indices[1]].y <<std::endl;
+        std::cout << "First point position z = " << output_cloud_ptr->points[clusters[0].indices[1]].z <<std::endl;
     }
 
 
@@ -214,7 +251,7 @@ void CloudProcess::process()
         {
 
             ///*3.1 Plane clustering by normals*
-            /***Consider to use RANSAC plan fitting to get normal in one cluster
+            /***NOTE: Consider to use RANSAC plan fitting to get normal in one cluster
              * rather than calculate average normal of normals calculated before
             */
             int plane_type; //0: vertical; 1: horizontal, 2:others
@@ -254,35 +291,37 @@ void CloudProcess::process()
             else
                 plane_type = 2;
 
-            ///*3.2 Show*
+            ///*3.2 Give different clusters different colors to show later*
             ///Add one cluster ptr
             colored_cloud_e.push_back((new pcl::PointCloud<pcl::PointXYZRGB>)->makeShared());
             counter = 0;
             ///Generate one color. Set random colors to display
-            if(plane_type == 0) //Vertical; Blue
+            if(plane_type == 0) //Vertical; Red
             {
-                colors[0] = 0;
+                colors[0] = rand() % 256 + 30;
+                if(colors[0] > 255) colors[0] = 255;
                 colors[1] = 0;
-                colors[2] = rand() % 256;
+                colors[2] = 0;
             }
             else if(plane_type == 1) //Horizontal; Green
             {
                 colors[0] = 0;
-                colors[1] = rand() % 256;
+                colors[1] = rand() % 256 + 30;
+                if(colors[1] > 255) colors[1] = 255;
                 colors[2] = 0;
             }
-            else  //Others; Red
+            else  //Others; Blue / black
             {
-                colors[0] = 0;//rand() % 256;
+                colors[0] = 0;
                 colors[1] = 0;
-                colors[2] = 0;
+                colors[2] = 0; //rand() % 256;
             }
 
             output_cloud_ptr = output_cloud.makeShared(); //link
 
             colored_cloud_e[i_cluster]->is_dense = output_cloud_ptr->is_dense;
 
-            ///Set color
+            ///Set color and insert points sequence
             for(size_t i_point = 0; i_point <clusters[i_cluster].indices.size();i_point++)
             {
                 pcl::PointXYZRGB point;
@@ -304,30 +343,107 @@ void CloudProcess::process()
         }
     }
 
+
+    ///*4. Process all vertical and  horizontal clusters to find or make a roof and a ground *
+    /// Now, it is about logic :)  See specific functions
+
+
+
     std::cout<<"Process finished"<<std::endl;
     std::cout<<output_cloud<<std::endl;
 }
 
-void CloudProcess::process_and_show()
+
+void CloudProcess::filter_process_and_show()
 {
     if(rg_s.Use)
-        process_and_show_result();
+        filter_process_and_show_result();
     else
-        process_and_show_cloud();
+        filter_process_and_show_cloud();
 
 }
 
-void CloudProcess::process_and_show_cloud()
+void CloudProcess::filter_process_and_show_cloud()
 {
-    process();
+    filter_process();
     viewPointXYZ(output_cloud);
 }
 
-void CloudProcess::process_and_show_result()
+void CloudProcess::filter_process_and_show_result()
 {
-    process();
+    filter_process();
     viewPointXYZRGBPtr(colored_cloud_e);
 }
+
+void CloudProcess::process_cloud_all()
+{
+    input_cloud_all_ptr = input_cloud_all.makeShared();
+
+    /// Split freespace and obstacle
+    freespace_obstacle_split(input_cloud_all_ptr, free_space_ptr, obstacle_ptr, fs_min_val);
+    pcl::copyPointCloud(*obstacle_ptr, input_cloud);
+    filter_process_and_show();
+    two_dimension_map_generate();
+}
+
+void CloudProcess::two_dimension_map_generate()
+{
+    /// NOTE: x, y, z values in "input_cloud_all" should all be with in [0, Area_Length]
+    ///       if not, please transform the coordinate by cutting the center position
+    int length = (int) (Area_Length / Voxel_Length);
+    std::cout << "***Length = " << length <<std::endl;
+    cv::Mat map(length, length, CV_8UC1, cv::Scalar(0));
+    cv::Mat map_ob(length, length, CV_8UC1, cv::Scalar(0)); /// NOTE: Area_Length / Voxel_Length should be less than 64
+    cv::Mat map_fs(length, length, CV_8UC1, cv::Scalar(0)); /// NOTE: Area_Length / Voxel_Length should be less than 64
+
+    input_cloud_all_ptr = input_cloud_all.makeShared();
+
+    /// NOTE: No need to split again. Consider to improve efficiency later according to real input
+    for(int i = 0; i < input_cloud_all_ptr->width; i++)
+    {
+        if(input_cloud_all_ptr->points[i].intensity > fs_min_val)  /// free space
+        {
+            map_fs.ptr<unsigned char>((int)(input_cloud_all_ptr->points[i].x / Voxel_Length))[(int)(input_cloud_all_ptr->points[i].y / Voxel_Length)] += 1;
+        }
+        else /// obstacle
+        {
+            map_ob.ptr<unsigned char>((int)(input_cloud_all_ptr->points[i].x / Voxel_Length))[(int)(input_cloud_all_ptr->points[i].y / Voxel_Length)] += 1;
+        }
+    }
+
+//    for(int i = 0; i < length; i++) /// row
+//    {
+//        for(int j = 0; j < length; j++) /// col
+//        {
+//            if(map_fs.ptr<unsigned char>(i)[j] > 0 || map_ob.ptr<unsigned char>(i)[j] > 0)
+//            {
+//                /// If any point detected, give 128 as basic value. Detect in given height
+//                map.ptr<unsigned char>(i)[j] = 128 +
+//            }
+//        }
+//    }
+
+    cv::imshow("ob", map_ob);
+    cv::waitKey(100);
+    cv::imshow("fs", map_fs);
+    cv::waitKey(100);
+
+}
+
+
+void CloudProcess::vertical_clusters_process()
+{
+    //vertical_clusters
+    output_cloud_ptr = output_cloud.makeShared();
+
+}
+
+void CloudProcess::horizontal_clusters_process()
+{
+    //horizontal_clusters
+    output_cloud_ptr = output_cloud.makeShared();
+}
+
 
 void CloudProcess::viewPointXYZPtr(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_ptr)
 {
@@ -378,7 +494,30 @@ boost::shared_ptr<pcl::visualization::PCLVisualizer> CloudProcess::PointXYZRGBVi
     return (viewer);
 }
 
+void CloudProcess::freespace_obstacle_split(pcl::PointCloud<pcl::PointXYZI>::Ptr cloud, pcl::PointCloud<pcl::PointXYZ>::Ptr free_space_cloud, pcl::PointCloud<pcl::PointXYZ>::Ptr obstacle_cloud, float threshold)
+{
+    free_space_cloud->clear();
+    obstacle_cloud->clear();
 
+    for(int i = 0; i < cloud->width; i++)
+    {
+        if(cloud->points[i].intensity > threshold)
+        {
+            pcl::PointXYZ pclp;
+            pclp.x = cloud->points[i].x;
+            pclp.y = cloud->points[i].y;
+            pclp.z = cloud->points[i].z;
+            free_space_cloud->points.push_back(pclp);
+        } else
+        {
+            pcl::PointXYZ pclp;
+            pclp.x = cloud->points[i].x;
+            pclp.y = cloud->points[i].y;
+            pclp.z = cloud->points[i].z;
+            obstacle_cloud->points.push_back(pclp);
+        }
+    }
+}
 
 
 
