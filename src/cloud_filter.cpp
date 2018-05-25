@@ -29,6 +29,7 @@ bool customRegionGrowing (const pcl::PointNormal& point_a, const pcl::PointNorma
 CloudProcess::CloudProcess()
 {
     /// Area size. Should be the same as local "ewok_ring_buffer" map
+    /// NOTE: Area_Length / Voxel_Length should be smaller than 255. (uchar index)
     Area_Length = 6.4;
     Voxel_Length = 0.1;
 
@@ -69,7 +70,7 @@ CloudProcess::CloudProcess()
 
     /// Region_Growing_Segmentation
     /// Note: these parameters need to be tuned carefully later !!!!
-    rg_s.Use = false;
+    rg_s.Use = true;
     rg_s.Point_Size_Min_Dividend = 500;
     rg_s.Point_Size_Max_Dividend = 3;
     rg_s.Number_Of_Neighbours = 72; //Important
@@ -415,15 +416,27 @@ void CloudProcess::two_dimension_map_generate()
     ///       if not, please transform the coordinate by cutting the center position, where the robot is.
     int length = (int) (Area_Length / Voxel_Length);
     std::cout << "***Length = " << length <<std::endl;
-    cv::Mat map(length, length, CV_8UC1, cv::Scalar(0));
+
+    /// Initialize maps
+    map = cv::Mat::zeros(length, length, CV_8UC1);
     cv::Mat map_ob(length, length, CV_8UC1, cv::Scalar(0));
     cv::Mat map_fs(length, length, CV_8UC1, cv::Scalar(0));
 
     input_cloud_all_ptr = input_cloud_all.makeShared();
 
     /// NOTE: No need to split again. Consider to improve efficiency later according to real input
+    float z_min_demand = ground_height + 0.1f;
+    float z_max_demand = roof_height - 0.1f;
+
     for(int i = 0; i < input_cloud_all_ptr->width; i++)
     {
+        /// Only count points in reasonable height range
+        if(input_cloud_all_ptr->points[i].z < z_min_demand)
+            continue;
+        if(input_cloud_all_ptr->points[i].z >  z_max_demand)
+            continue;
+
+        /// Add free space and obstacle points
         if(input_cloud_all_ptr->points[i].intensity > fs_min_val)  /// free space
         {
             map_fs.ptr<unsigned char>((int)(input_cloud_all_ptr->points[i].x / Voxel_Length))[(int)(input_cloud_all_ptr->points[i].y / Voxel_Length)] += 1;
@@ -439,18 +452,60 @@ void CloudProcess::two_dimension_map_generate()
      * To do next: 2D map with processed points
      */
 
-//    for(int i = 0; i < length; i++) /// row
-//    {
-//        for(int j = 0; j < length; j++) /// col
-//        {
-//            if(map_fs.ptr<unsigned char>(i)[j] > 0 || map_ob.ptr<unsigned char>(i)[j] > 0)
-//            {
-//                /// If any point detected, give 128 as basic value. Detect in given height
-//                map.ptr<unsigned char>(i)[j] = 128 +
-//            }
-//        }
-//    }
 
+    /// Add useful original points data to map
+    float height_max_voxels = (z_max_demand - z_min_demand) / Voxel_Length;
+    int temp_intensity = 0;
+
+    for(int i = 0; i < length; i++) /// row
+    {
+        for(int j = 0; j < length; j++) /// col
+        {
+            if(map_fs.ptr<unsigned char>(i)[j] > 0 || map_ob.ptr<unsigned char>(i)[j] > 0)
+            {
+                /// If any point detected, give 128 as basic value.
+                /// Free space has a higher intensity while obstacle has a lower.
+                /// Obstacles in map_filted_ob has 50 times reliability
+
+                temp_intensity = 128 - map_filted_ob.ptr<unsigned char>(i)[j] * 100 + (float)map_fs.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f - (float)map_ob.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f;
+                if(temp_intensity < 1) temp_intensity = 1;
+                else if(temp_intensity > 255) temp_intensity = 255;
+
+                map.ptr<unsigned char>(i)[j] = (unsigned char) temp_intensity;
+            }
+        }
+    }
+    map_intensity = map.clone();
+
+    /// Intensity filter
+    for(int i = 0; i < length; i++) /// row
+    {
+        for(int j = 0; j < length; j++) /// col
+        {
+            /// Abort data between 100 and 200
+            if(map.ptr<unsigned char>(i)[j] > 200)
+                map.ptr<unsigned char>(i)[j] = 255;  /// White: free sapce
+            else if(map.ptr<unsigned char>(i)[j] == 0)
+                ;
+            else if(map.ptr<unsigned char>(i)[j] < 100)
+                map.ptr<unsigned char>(i)[j] = 100;  /// Gray: obstacle
+            else
+                map.ptr<unsigned char>(i)[j] = 0;  /// Black: unknown
+
+        }
+    }
+
+    /// Save and show
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_fs.jpg", map_fs);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_ob.jpg", map_ob);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map.jpg", map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_intensity.jpg", map_intensity);
+
+
+    cv::imshow("map", map);
+    cv::waitKey(100);
+    cv::imshow("map_intensity", map_intensity);
+    cv::waitKey(100);
     cv::imshow("ob", map_ob);
     cv::waitKey(100);
     cv::imshow("fs", map_fs);
@@ -464,6 +519,9 @@ void CloudProcess::vertical_clusters_process()
     //vertical_clusters
     output_cloud_ptr = output_cloud.makeShared();
 
+    int length = (int) (Area_Length / Voxel_Length);
+    map_filted_ob = cv::Mat::zeros(length, length, CV_8UC1);
+
     if(vertical_clusters.size() == 0)
     {
         vertical_structure_type = 4; /// found no walls
@@ -473,15 +531,22 @@ void CloudProcess::vertical_clusters_process()
         /// Find the lowest and the highest point
         upper_bound = 0.f;
         lower_bound = Area_Length;
+        int point_seq;
+
         for(int i = 0; i < vertical_clusters.size(); i++)
         {
             for(int j = 0; j < vertical_clusters[i].indices.size(); j++)
             {
-                float z = output_cloud_ptr->points[vertical_clusters[i].indices[j]].z;
+                point_seq = vertical_clusters[i].indices[j];
+
+                float z = output_cloud_ptr->points[point_seq].z;
                 if(z > upper_bound) upper_bound = z;
                 if(z < lower_bound) lower_bound = z;
+
+                map_filted_ob.ptr<unsigned char>((int)(output_cloud_ptr->points[point_seq].x / Voxel_Length))[(int)(output_cloud_ptr->points[point_seq].y / Voxel_Length)] += 1;
             }
         }
+
 
         /// Set vertical_structure_type
         ///NOTE: Sometimes the camera view angle is too small to reach the Area_Length height in a cubic local map

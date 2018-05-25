@@ -89,6 +89,14 @@ public:
     /// Clusters to store horizontal segmented indices, like roof, ground and surface of table
     std::vector<pcl::PointIndices> horizontal_clusters;
 
+
+    /**
+     * Global mat for 2D map image
+     */
+    cv::Mat map;
+    cv::Mat map_intensity;
+    cv::Mat map_filted_ob;
+
     /**
      * Parameters for structure features
      */
