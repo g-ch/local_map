@@ -145,6 +145,11 @@ public:
     float robot_lower_height; /// Distance from the camera to the bottom of the robot
 
     /**
+     * Paremeters about 2D map
+     */
+    double valid_fspoints_search_radius;
+
+    /**
      * Parameters for filters or smoothers
      */
     /// Neighbour radius for normal calculation
@@ -277,6 +282,7 @@ private:
      */
     void viewPointXYZRGBPtr(std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> clouds_Ptr);
 
+    void pointXYZItoXYZ(pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_xyzi, pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_xyz);
 };
 
 #endif //LOCAL_MAP_CLOUD_FILTER_H

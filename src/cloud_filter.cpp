@@ -81,6 +81,9 @@ CloudProcess::CloudProcess()
     /// Distance from the camera to the top \ bottom of the robot
     robot_upper_height = 0.3f;
     robot_lower_height = 0.3f;
+
+    /// Paremeters about 2D map
+    valid_fspoints_search_radius = 0.8;
 }
 
 CloudProcess::~CloudProcess()
@@ -404,9 +407,10 @@ void CloudProcess::process_cloud_all()
     pcl::copyPointCloud(*obstacle_ptr, input_cloud);
 
 
-    filter_process_and_show();
+    /// Too slow with little use. Just abort it....
+    //filter_process_and_show();
 
-
+    /// Use this one directly is better.
     two_dimension_map_generate();
 }
 
@@ -424,12 +428,63 @@ void CloudProcess::two_dimension_map_generate()
 
     input_cloud_all_ptr = input_cloud_all.makeShared();
 
+    /// Find roof and ground height
+    int number_bound = (int) (pow(valid_fspoints_search_radius, 3) * 4.2 / pow(Voxel_Length, 3) * 0.4); ///limitation set by volume
+
+    pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud_xyz_ptr (new pcl::PointCloud<pcl::PointXYZ>);
+
+    pointXYZItoXYZ(input_cloud_all_ptr, input_cloud_xyz_ptr);
+
+    pcl::KdTreeFLANN<pcl::PointXYZ> kdtree;
+    kdtree.setInputCloud(input_cloud_xyz_ptr);
+    pcl::PointXYZ searchPoint;
+
+    float highest_z = 0.0;
+    float lowest_z = 6.4;
+
+    for(int i = 0; i < input_cloud_all_ptr->width; i++)
+    {
+        if(input_cloud_xyz_ptr->points[i].z > highest_z)
+        {
+            std::vector<int> pointIdxRadiusSearch;
+            std::vector<float> pointRadiusSquaredDistance;
+            searchPoint = input_cloud_xyz_ptr->points[i];
+
+            if(kdtree.radiusSearch (searchPoint, valid_fspoints_search_radius, pointIdxRadiusSearch, pointRadiusSquaredDistance) > number_bound )
+            {
+                highest_z = searchPoint.z;
+            }
+        }
+
+        if(input_cloud_xyz_ptr->points[i].z < lowest_z)
+        {
+            std::vector<int> pointIdxRadiusSearch;
+            std::vector<float> pointRadiusSquaredDistance;
+            searchPoint = input_cloud_xyz_ptr->points[i];
+
+            if(kdtree.radiusSearch (searchPoint, valid_fspoints_search_radius, pointIdxRadiusSearch, pointRadiusSquaredDistance) > number_bound )
+            {
+                lowest_z = searchPoint.z;
+            }
+        }
+
+    }
+
+
+    std::cout << "Found highest_z = " << highest_z << std::endl;
+    std::cout << "Found lowest_z = " << lowest_z << std::endl;
+
+    roof_height = highest_z;
+    ground_height = lowest_z;
+
     /// NOTE: No need to split again. Consider to improve efficiency later according to real input
     float z_min_demand = ground_height + 0.1f;
     float z_max_demand = roof_height - 0.1f;
 
     for(int i = 0; i < input_cloud_all_ptr->width; i++)
     {
+
+
         /// Only count points in reasonable height range
         if(input_cloud_all_ptr->points[i].z < z_min_demand)
             continue;
@@ -448,14 +503,15 @@ void CloudProcess::two_dimension_map_generate()
     }
 
 
-    /**
-     * To do next: 2D map with processed points
-     */
 
+    /**
+     * 2D map with processed points
+     */
 
     /// Add useful original points data to map
     float height_max_voxels = (z_max_demand - z_min_demand) / Voxel_Length;
     int temp_intensity = 0;
+
 
     for(int i = 0; i < length; i++) /// row
     {
@@ -467,7 +523,9 @@ void CloudProcess::two_dimension_map_generate()
                 /// Free space has a higher intensity while obstacle has a lower.
                 /// Obstacles in map_filted_ob has 50 times reliability
 
-                temp_intensity = 128 - map_filted_ob.ptr<unsigned char>(i)[j] * 100 + (float)map_fs.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f - (float)map_ob.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f;
+                //temp_intensity = 128 - map_filted_ob.ptr<unsigned char>(i)[j] * 100 + (float)map_fs.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f - (float)map_ob.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f;
+                temp_intensity = 128 + (float)map_fs.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f - (float)map_ob.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f;
+
                 if(temp_intensity < 1) temp_intensity = 1;
                 else if(temp_intensity > 255) temp_intensity = 255;
 
@@ -510,7 +568,6 @@ void CloudProcess::two_dimension_map_generate()
     cv::waitKey(100);
     cv::imshow("fs", map_fs);
     cv::waitKey(100);
-
 }
 
 
@@ -946,6 +1003,20 @@ void CloudProcess::freespace_obstacle_split(pcl::PointCloud<pcl::PointXYZI>::Ptr
             pclp.z = cloud->points[i].z;
             obstacle_cloud->points.push_back(pclp);
         }
+    }
+}
+
+
+void CloudProcess::pointXYZItoXYZ(pcl::PointCloud<pcl::PointXYZI>::Ptr cloud_xyzi, pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_xyz)
+{
+    cloud_xyz->clear();
+    for(int i = 0; i < cloud_xyzi->width; i++)
+    {
+        pcl::PointXYZ pclp;
+        pclp.x = cloud_xyzi->points[i].x;
+        pclp.y = cloud_xyzi->points[i].y;
+        pclp.z = cloud_xyzi->points[i].z;
+        cloud_xyz->points.push_back(pclp);
     }
 }
 
