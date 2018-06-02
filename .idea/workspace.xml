@@ -2,41 +2,41 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true" buildAllGenerated="true">
     <generated>
-      <config projectName="local_map" targetName="std_msgs_generate_messages_cpp" />
-      <config projectName="local_map" targetName="roscpp_generate_messages_eus" />
-      <config projectName="local_map" targetName="geometry_msgs_generate_messages_cpp" />
       <config projectName="local_map" targetName="std_msgs_generate_messages_lisp" />
-      <config projectName="local_map" targetName="clean_test_results" />
-      <config projectName="local_map" targetName="sensor_msgs_generate_messages_nodejs" />
-      <config projectName="local_map" targetName="run_tests" />
-      <config projectName="local_map" targetName="roscpp_generate_messages_py" />
-      <config projectName="local_map" targetName="doxygen" />
-      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_py" />
-      <config projectName="local_map" targetName="std_msgs_generate_messages_py" />
-      <config projectName="local_map" targetName="gmock_main" />
-      <config projectName="local_map" targetName="gtest" />
-      <config projectName="local_map" targetName="gtest_main" />
-      <config projectName="local_map" targetName="tests" />
-      <config projectName="local_map" targetName="roscpp_generate_messages_nodejs" />
-      <config projectName="local_map" targetName="std_msgs_generate_messages_nodejs" />
-      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_eus" />
-      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_lisp" />
-      <config projectName="local_map" targetName="cloud_filter" />
       <config projectName="local_map" targetName="roscpp_generate_messages_cpp" />
-      <config projectName="local_map" targetName="download_extra_data" />
-      <config projectName="local_map" targetName="sensor_msgs_generate_messages_eus" />
-      <config projectName="local_map" targetName="roscpp_generate_messages_lisp" />
-      <config projectName="local_map" targetName="std_msgs_generate_messages_eus" />
       <config projectName="local_map" targetName="geometry_msgs_generate_messages_py" />
-      <config projectName="local_map" targetName="geometry_msgs_generate_messages_eus" />
-      <config projectName="local_map" targetName="sensor_msgs_generate_messages_cpp" />
-      <config projectName="local_map" targetName="geometry_msgs_generate_messages_nodejs" />
-      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_nodejs" />
       <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_cpp" />
+      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_nodejs" />
       <config projectName="local_map" targetName="sensor_msgs_generate_messages_lisp" />
-      <config projectName="local_map" targetName="gmock" />
-      <config projectName="local_map" targetName="sensor_msgs_generate_messages_py" />
+      <config projectName="local_map" targetName="geometry_msgs_generate_messages_eus" />
+      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_lisp" />
+      <config projectName="local_map" targetName="roscpp_generate_messages_nodejs" />
+      <config projectName="local_map" targetName="gtest_main" />
+      <config projectName="local_map" targetName="run_tests" />
+      <config projectName="local_map" targetName="std_msgs_generate_messages_py" />
+      <config projectName="local_map" targetName="cloud_filter" />
+      <config projectName="local_map" targetName="download_extra_data" />
       <config projectName="local_map" targetName="geometry_msgs_generate_messages_lisp" />
+      <config projectName="local_map" targetName="std_msgs_generate_messages_cpp" />
+      <config projectName="local_map" targetName="tests" />
+      <config projectName="local_map" targetName="geometry_msgs_generate_messages_nodejs" />
+      <config projectName="local_map" targetName="sensor_msgs_generate_messages_eus" />
+      <config projectName="local_map" targetName="clean_test_results" />
+      <config projectName="local_map" targetName="doxygen" />
+      <config projectName="local_map" targetName="gtest" />
+      <config projectName="local_map" targetName="roscpp_generate_messages_eus" />
+      <config projectName="local_map" targetName="roscpp_generate_messages_lisp" />
+      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_py" />
+      <config projectName="local_map" targetName="rosgraph_msgs_generate_messages_eus" />
+      <config projectName="local_map" targetName="geometry_msgs_generate_messages_cpp" />
+      <config projectName="local_map" targetName="gmock_main" />
+      <config projectName="local_map" targetName="std_msgs_generate_messages_nodejs" />
+      <config projectName="local_map" targetName="sensor_msgs_generate_messages_py" />
+      <config projectName="local_map" targetName="roscpp_generate_messages_py" />
+      <config projectName="local_map" targetName="sensor_msgs_generate_messages_nodejs" />
+      <config projectName="local_map" targetName="gmock" />
+      <config projectName="local_map" targetName="std_msgs_generate_messages_eus" />
+      <config projectName="local_map" targetName="sensor_msgs_generate_messages_cpp" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -46,12 +46,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="369fccf7-5c59-4cb9-95ca-59a8fe7e42e5" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/data/map_eroded.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/result-intersection-001/map.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/result-intersection-001/map_eroded.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/result-intersection-001/map_fs.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/result-intersection-001/map_intensity.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/data/result-intersection-001/map_ob.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/gvg.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/map_fs.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/map_fs.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/map_fs.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/data/map_intensity.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/map_intensity.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/map_ob.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/map_ob.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/cloud_filter.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/cloud_filter.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/map_ob.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/gvg.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/gvg.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cloud_filter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cloud_filter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cloud_node.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cloud_node.cpp" afterDir="false" />
     </list>
@@ -64,42 +72,14 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DockManager">
-    <window id="1">
-      <content type="file-editors">
-        <state>
-          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-            <file leaf-file-name="mapping.cpp" pinned="false" current-in-tab="false">
-              <entry file="file://$USER_HOME$/git/ring_buffer/secure_flying/src/mapping.cpp">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="3476">
-                    <caret line="158" column="39" selection-start-line="181" selection-start-column="23" selection-end-line="181" selection-end-column="33" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="ed_nor_ring_buffer.h" pinned="false" current-in-tab="true">
-              <entry file="file://$USER_HOME$/git/ring_buffer/ewok_ring_buffer/include/ewok/ed_nor_ring_buffer.h">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="906">
-                    <caret line="184" column="38" selection-start-line="184" selection-start-column="38" selection-end-line="184" selection-end-column="38" />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file leaf-file-name="cloud_filter.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/cloud_filter.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1068">
-              <caret line="284" column="4" selection-start-line="284" selection-start-column="4" selection-end-line="284" selection-end-column="120" />
+            <state relative-caret-position="550">
+              <caret line="25" selection-start-line="25" selection-end-line="25" />
               <folding>
                 <element signature="e#109#126#0" expanded="true" />
               </folding>
@@ -110,20 +90,11 @@
       <file leaf-file-name="cloud_filter.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="484">
-              <caret line="508" column="7" lean-forward="true" selection-start-line="508" selection-start-column="7" selection-end-line="508" selection-end-column="7" />
+            <state relative-caret-position="1074">
+              <caret line="668" column="51" selection-start-line="668" selection-start-column="51" selection-end-line="668" selection-end-column="51" />
               <folding>
                 <element signature="e#42#78#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="902">
-              <caret line="41" column="92" selection-start-line="41" selection-start-column="92" selection-end-line="41" selection-end-column="92" />
             </state>
           </provider>
         </entry>
@@ -131,8 +102,8 @@
       <file leaf-file-name="gvg.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/gvg.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="9" column="32" selection-start-line="9" selection-start-column="32" selection-end-line="9" selection-end-column="32" />
+            <state relative-caret-position="418">
+              <caret line="19" column="47" lean-forward="true" selection-start-line="19" selection-end-line="20" />
               <folding>
                 <element signature="e#91#129#0" expanded="true" />
               </folding>
@@ -140,23 +111,32 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cloud_node.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
+      <file leaf-file-name="gvg.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/gvg.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1184">
-              <caret line="171" column="11" lean-forward="true" selection-start-line="168" selection-start-column="10" selection-end-line="171" selection-end-column="11" />
-              <folding>
-                <element signature="e#42#78#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="1262">
+              <caret line="225" column="5" selection-start-line="225" selection-start-column="5" selection-end-line="225" selection-end-column="5" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="point_cloud.h" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/include/pcl-1.7/pcl/point_cloud.h">
+      <file leaf-file-name="flann.hpp" pinned="false" current-in-tab="false">
+        <entry file="file:///usr/include/flann/flann.hpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="12738">
-              <caret line="579" column="6" selection-start-line="579" selection-start-column="6" selection-end-line="579" selection-end-column="6" />
+            <state relative-caret-position="444">
+              <caret line="136" column="9" selection-start-line="136" selection-start-column="9" selection-end-line="136" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cloud_node.cpp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2596">
+              <caret line="151" column="5" selection-start-line="151" selection-start-column="5" selection-end-line="151" selection-end-column="5" />
+              <folding>
+                <element signature="e#42#78#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -183,10 +163,16 @@
       <find>_last_time</find>
       <find>input_cloud</find>
       <find>read_cloud_process</find>
-      <find>erase</find>
       <find>64</find>
       <find>nor</find>
       <find>freespace_obstacle_split</find>
+      <find>map_ob</find>
+      <find>ifacets</find>
+      <find>RAND_MAX</find>
+      <find>cluster_num</find>
+      <find>intersection_queue</find>
+      <find>cv</find>
+      <find>erase</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -197,9 +183,10 @@
       <list>
         <option value="$USER_HOME$/git/ring_buffer/ewok_ring_buffer/include/ewok/ed_nor_ring_buffer.h" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/include/gvg.h" />
         <option value="$PROJECT_DIR$/include/cloud_filter.h" />
         <option value="$PROJECT_DIR$/src/cloud_node.cpp" />
+        <option value="$PROJECT_DIR$/include/gvg.h" />
+        <option value="$PROJECT_DIR$/src/gvg.cpp" />
         <option value="$PROJECT_DIR$/src/cloud_filter.cpp" />
       </list>
     </option>
@@ -367,28 +354,29 @@
       <workItem from="1526989013357" duration="9717000" />
       <workItem from="1527125526805" duration="36201000" />
       <workItem from="1527232934008" duration="7222000" />
-      <workItem from="1527420573650" duration="6132000" />
+      <workItem from="1527420573650" duration="22197000" />
+      <workItem from="1527732057062" duration="38950000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="129164000" />
+    <option name="totallyTimeSpent" value="184179000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-11" width="1017" height="1932" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.06502463" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.091625616" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info active="true" anchor="bottom" id="Messages" order="7" sideWeight="0.7990148" visible="true" weight="0.16189428" />
+      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.6995074" weight="0.16189428" />
       <window_info anchor="bottom" id="CMake" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.20098522" side_tool="true" visible="true" weight="0.16189428" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.5241379" weight="0.25055066" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.6413793" side_tool="true" visible="true" weight="0.1222467" />
       <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.3586207" visible="true" weight="0.1222467" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49556652" weight="0.21145375" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49556652" weight="0.21145375" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -410,43 +398,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///usr/include/pcl-1.7/pcl/common/io.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7480">
-          <caret line="340" column="2" selection-start-line="340" selection-start-column="2" selection-end-line="340" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1562">
-          <caret line="71" column="36" selection-start-line="71" selection-start-column="36" selection-end-line="71" selection-end-column="36" />
-          <folding>
-            <element signature="e#42#78#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2134">
-          <caret line="97" column="99" selection-start-line="97" selection-start-column="99" selection-end-line="97" selection-end-column="99" />
-          <folding>
-            <element signature="e#42#78#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include/cloud_filter.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1210">
-          <caret line="55" column="72" selection-start-line="55" selection-start-column="72" selection-end-line="55" selection-end-column="72" />
-          <folding>
-            <element signature="e#109#126#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2178">
@@ -738,20 +689,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/gvg.h">
+    <entry file="file://$USER_HOME$/git/ring_buffer/secure_flying/src/mapping.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="9" column="32" selection-start-line="9" selection-start-column="32" selection-end-line="9" selection-end-column="32" />
-          <folding>
-            <element signature="e#91#129#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="3476">
+          <caret line="158" column="39" selection-start-line="181" selection-start-column="23" selection-end-line="181" selection-end-column="33" />
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/include/pcl-1.7/pcl/point_cloud.h">
+    <entry file="file://$USER_HOME$/git/ring_buffer/ewok_ring_buffer/include/ewok/ed_nor_ring_buffer.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="12738">
-          <caret line="579" column="6" selection-start-line="579" selection-start-column="6" selection-end-line="579" selection-end-column="6" />
+        <state relative-caret-position="466">
+          <caret line="164" column="26" lean-forward="true" selection-start-line="164" selection-start-column="26" selection-end-line="164" selection-end-column="26" />
         </state>
       </provider>
     </entry>
@@ -762,24 +710,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/git/ring_buffer/secure_flying/src/mapping.cpp">
+    <entry file="file:///usr/include/pcl-1.7/pcl/point_cloud.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3476">
-          <caret line="158" column="39" selection-start-line="181" selection-start-column="23" selection-end-line="181" selection-end-column="33" />
+        <state relative-caret-position="1265">
+          <caret line="579" column="6" selection-start-line="579" selection-start-column="6" selection-end-line="579" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/git/ring_buffer/ewok_ring_buffer/include/ewok/ed_nor_ring_buffer.h">
+    <entry file="file:///opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/imgproc.hpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="906">
-          <caret line="184" column="38" selection-start-line="184" selection-start-column="38" selection-end-line="184" selection-end-column="38" />
+        <state relative-caret-position="436">
+          <caret line="4306" column="18" selection-start-line="4306" selection-start-column="18" selection-end-line="4306" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/include/cloud_filter.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1068">
-          <caret line="284" column="4" selection-start-line="284" selection-start-column="4" selection-end-line="284" selection-end-column="120" />
+        <state relative-caret-position="550">
+          <caret line="25" selection-start-line="25" selection-end-line="25" />
           <folding>
             <element signature="e#109#126#0" expanded="true" />
           </folding>
@@ -788,18 +736,49 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1184">
-          <caret line="171" column="11" lean-forward="true" selection-start-line="168" selection-start-column="10" selection-end-line="171" selection-end-column="11" />
+        <state relative-caret-position="2596">
+          <caret line="151" column="5" selection-start-line="151" selection-start-column="5" selection-end-line="151" selection-end-column="5" />
           <folding>
             <element signature="e#42#78#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/include/stdlib.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="414">
+          <caret line="373" column="31" lean-forward="true" selection-start-line="373" selection-start-column="31" selection-end-line="373" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/flann/flann.hpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="444">
+          <caret line="136" column="9" selection-start-line="136" selection-start-column="9" selection-end-line="136" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include/gvg.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="19" column="47" lean-forward="true" selection-start-line="19" selection-end-line="20" />
+          <folding>
+            <element signature="e#91#129#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gvg.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1262">
+          <caret line="225" column="5" selection-start-line="225" selection-start-column="5" selection-end-line="225" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="484">
-          <caret line="508" column="7" lean-forward="true" selection-start-line="508" selection-start-column="7" selection-end-line="508" selection-end-column="7" />
+        <state relative-caret-position="1074">
+          <caret line="668" column="51" selection-start-line="668" selection-start-column="51" selection-end-line="668" selection-end-column="51" />
           <folding>
             <element signature="e#42#78#0" expanded="true" />
           </folding>

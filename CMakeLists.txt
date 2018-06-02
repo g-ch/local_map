@@ -38,5 +38,5 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${PCL_INCLUDE_DIRS})
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(cloud_filter src/cloud_filter.cpp src/cloud_node.cpp include/gvg.h)
+add_executable(cloud_filter src/cloud_filter.cpp src/cloud_node.cpp include/gvg.h src/gvg.cpp)
 target_link_libraries(cloud_filter ${catkin_LIBRARIES}  ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})

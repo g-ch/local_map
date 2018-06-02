@@ -83,7 +83,7 @@ CloudProcess::CloudProcess()
     robot_lower_height = 0.3f;
 
     /// Paremeters about 2D map
-    valid_fspoints_search_radius = 0.8;
+    valid_fspoints_search_radius =1.f;
 }
 
 CloudProcess::~CloudProcess()
@@ -426,6 +426,10 @@ void CloudProcess::two_dimension_map_generate()
     cv::Mat map_ob(length, length, CV_8UC1, cv::Scalar(0));
     cv::Mat map_fs(length, length, CV_8UC1, cv::Scalar(0));
 
+    /// Ratio of obstacle and free space to whole available space along z axis
+    std::vector<std::vector<float>> map_ob_ratio;
+    std::vector<std::vector<float>> map_fs_ratio;
+
     input_cloud_all_ptr = input_cloud_all.makeShared();
 
     /// Find roof and ground height
@@ -470,7 +474,6 @@ void CloudProcess::two_dimension_map_generate()
 
     }
 
-
     std::cout << "Found highest_z = " << highest_z << std::endl;
     std::cout << "Found lowest_z = " << lowest_z << std::endl;
 
@@ -478,8 +481,8 @@ void CloudProcess::two_dimension_map_generate()
     ground_height = lowest_z;
 
     /// NOTE: No need to split again. Consider to improve efficiency later according to real input
-    float z_min_demand = ground_height + 0.1f;
-    float z_max_demand = roof_height - 0.1f;
+    float z_min_demand = ground_height; // + 0.1f;
+    float z_max_demand = roof_height; // - 0.1f;
 
     for(int i = 0; i < input_cloud_all_ptr->width; i++)
     {
@@ -502,8 +505,6 @@ void CloudProcess::two_dimension_map_generate()
         }
     }
 
-
-
     /**
      * 2D map with processed points
      */
@@ -515,16 +516,28 @@ void CloudProcess::two_dimension_map_generate()
 
     for(int i = 0; i < length; i++) /// row
     {
+        std::vector<float> ob_ratio_temp_vec;
+        std::vector<float> fs_ratio_temp_vec;
+
         for(int j = 0; j < length; j++) /// col
         {
             if(map_fs.ptr<unsigned char>(i)[j] > 0 || map_ob.ptr<unsigned char>(i)[j] > 0)
             {
                 /// If any point detected, give 128 as basic value.
                 /// Free space has a higher intensity while obstacle has a lower.
-                /// Obstacles in map_filted_ob has 50 times reliability
+                /// Obstacles has 1 times reliability
 
                 //temp_intensity = 128 - map_filted_ob.ptr<unsigned char>(i)[j] * 100 + (float)map_fs.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f - (float)map_ob.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f;
-                temp_intensity = 128 + (float)map_fs.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f - (float)map_ob.ptr<unsigned char>(i)[j] / height_max_voxels * 127.f;
+
+                /// Ratio calculate
+                float ob_ratio = (float)map_ob.ptr<unsigned char>(i)[j] / height_max_voxels;
+                float fs_ratio = (float)map_fs.ptr<unsigned char>(i)[j] / height_max_voxels;
+
+                ob_ratio_temp_vec.push_back(ob_ratio);
+                fs_ratio_temp_vec.push_back(fs_ratio);
+
+                /// Intensity in map
+                temp_intensity = 128 +  fs_ratio* 127.f -  ob_ratio* 127.f;
 
                 if(temp_intensity < 1) temp_intensity = 1;
                 else if(temp_intensity > 255) temp_intensity = 255;
@@ -532,41 +545,128 @@ void CloudProcess::two_dimension_map_generate()
                 map.ptr<unsigned char>(i)[j] = (unsigned char) temp_intensity;
             }
         }
+
+        map_ob_ratio.push_back(ob_ratio_temp_vec);
+        map_fs_ratio.push_back(fs_ratio_temp_vec);
+
     }
     map_intensity = map.clone();
 
     /// Intensity filter
+    map = map > 200;
+
+    /// Erode and dilate
+    cv::Mat map_eroded = map.clone();
+    cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5));
+    cv::erode(map, map_eroded, element); //Opening operation
+    cv::dilate(map_eroded, map_eroded, element);
+
+
+    /// Flood fill to keep only one connected region
+    cv::floodFill(map_eroded, cv::Point(length/2-1, length/2-1), cv::Scalar(100), 0, cv::Scalar(10), cv::Scalar(10), 8); /// Square area
+    map_eroded = map_eroded == 100;
+
+    /// Remove small black pieces inside. Might be obstacles like pedestrians
+    cv::Mat element2 = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5));
+    cv::dilate(map_eroded, map_eroded, element); /// Closing operation
+    cv::erode(map_eroded, map_eroded, element);
+
+    cv::Mat voronoi_map = map_eroded.clone();
+    GVG gvg;
+    gvg.voronoi(voronoi_map);
+
+    cv::Mat thinned_map(length, length, CV_8UC1, cv::Scalar(0));
+
     for(int i = 0; i < length; i++) /// row
     {
         for(int j = 0; j < length; j++) /// col
         {
-            /// Abort data between 100 and 200
-            if(map.ptr<unsigned char>(i)[j] > 200)
-                map.ptr<unsigned char>(i)[j] = 255;  /// White: free sapce
-            else if(map.ptr<unsigned char>(i)[j] == 0)
-                ;
-            else if(map.ptr<unsigned char>(i)[j] < 100)
-                map.ptr<unsigned char>(i)[j] = 100;  /// Gray: obstacle
+            /// Only keep gray contour part
+            if(voronoi_map.ptr<unsigned char>(i)[j] == 150) {
+                thinned_map.ptr<unsigned char>(i)[j] = 255;
+            }
             else
-                map.ptr<unsigned char>(i)[j] = 0;  /// Black: unknown
-
+                thinned_map.ptr<unsigned char>(i)[j] = 0;  /// Black: unknown
         }
     }
 
+    cv::Mat tangent_map = gvg.tangent_vector(thinned_map, 2);
+
+    cv::Mat restructured_map = cv::Mat::zeros(length, length, CV_8UC1);
+    std::vector<cv::Point3i> clusters;
+    gvg.restructure(thinned_map, tangent_map, restructured_map, clusters, 3, 0.3);
+
+    for(int i = 0; i < clusters.size(); i++)
+    {
+        restructured_map.ptr<unsigned char>(clusters[i].y)[clusters[i].x] = clusters[i].y * 20;
+    }
+
+    //gvg.thinning(thinned_map);
+
+//    /// Find contours
+//    std::vector<std::vector<cv::Point>> contours;
+//    std::vector<cv::Vec4i> hierarchy;
+//
+//    cv::findContours(map_eroded, contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_NONE);
+//    //cv::drawContours(map_eroded, contours, 0, cv::Scalar(150), 2);
+//
+//    /// To do: remove large black pieces inside by flood fill the inner contour
+//
+//    /// Remove points on the edge of the image, Keep obstacle points
+//    std::vector<cv::Point> obstacle_points;
+//    for(int i = 0; i < contours[0].size(); i++)
+//    {
+//        if(contours[0][i].y != 0 && contours[0][i].y != length - 1 && contours[0][i].x != 0 && contours[0][i].x != length - 1)
+//            obstacle_points.push_back(contours[0][i]);
+//    }
+//
+//    /// Draw Contour Obstacle
+//    for(int i = 0; i < obstacle_points.size(); i++)
+//    {
+//        map_eroded.ptr<unsigned char>(obstacle_points[i].y)[obstacle_points[i].x] = 150;
+//    }
+
+
+
+//    /// Find potential windows or door points, Useless
+//    cv::Mat map_contour(length, length, CV_8UC1, cv::Scalar(0));
+//
+//    for(int i = 0; i < length; i++) /// row
+//    {
+//        for(int j = 0; j < length; j++) /// col
+//        {
+//            /// Only keep gray contour part
+//            if(map_eroded.ptr<unsigned char>(i)[j] == 150)
+//            {
+//                /// Judge if the contour point is a potential point by obstacle and free space ratio in a neighbourhood of each contour point
+//                if(map_ob_ratio[i][j] > 0.1 && map_fs_ratio[i][j] > 0.5 && (map_ob_ratio[i][j] + map_fs_ratio[i][j]) > 0.8)
+//                    map_contour.ptr<unsigned char>(i)[j] = 255;
+//                else
+//                    map_contour.ptr<unsigned char>(i)[j] = 150;  /// Gray: ordinary contour and neighbour
+//            }
+//            else
+//                map_contour.ptr<unsigned char>(i)[j] = 0;  /// Black: unknown
+//        }
+//    }
+
+
+
+
     /// Save and show
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_fs.jpg", map_fs);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_ob.jpg", map_ob);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map.jpg", map);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_intensity.jpg", map_intensity);
-
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_eroded.jpg", map_eroded);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/thinned_map.jpg", thinned_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/voronoi_map.jpg", voronoi_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/restructured_map.jpg", restructured_map);
 
     cv::imshow("map", map);
-    cv::waitKey(100);
+    cv::waitKey(50);
     cv::imshow("map_intensity", map_intensity);
+    cv::waitKey(50);
+    cv::imshow("map_eroded", map_eroded);
     cv::waitKey(100);
-    cv::imshow("ob", map_ob);
-    cv::waitKey(100);
-    cv::imshow("fs", map_fs);
+    cv::imshow("restructured_map", restructured_map);
     cv::waitKey(100);
 }
 
