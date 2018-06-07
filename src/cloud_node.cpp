@@ -152,7 +152,7 @@ int main( int argc, char **argv )
     {
         //read_cloud_process_XYZ("/home/clarence/catkin_ws/src/local_map/data/2.pcd");
         read_cloud_process_XYZI("/home/clarence/catkin_ws/src/local_map/data/3m_all/all-3m-T-Intersection-2.pcd"); //all-3m-hallway-2.pcd"); //
-        //read_cloud_process_XYZI("/home/clarence/catkin_ws/src/local_map/data/3m_all/all-3m-hallway-2.pcd"); //all-3m-T-Intersection-2.pcd"); //all-3m-hallway-2.pcd");
+        //read_cloud_process_XYZI("/home/clarence/catkin_ws/src/local_map/data/3m_all/all-3m-hallway-1.pcd"); //all-3m-T-Intersection-2.pcd"); //all-3m-hallway-2.pcd");
     }
 
     ros::Rate loop_rate(20);

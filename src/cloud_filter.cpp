@@ -5,6 +5,9 @@
 #include "../include/cloud_filter.h"
 #include "boost/bind.hpp"
 
+using namespace std;
+using namespace cv;
+
 pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud_ptr( new pcl::PointCloud<pcl::PointXYZ>);
 pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud_ptr( new pcl::PointCloud<pcl::PointXYZ>);
 
@@ -575,7 +578,7 @@ void CloudProcess::two_dimension_map_generate()
     GVG gvg;
     gvg.voronoi(voronoi_map);
 
-    cv::Mat thinned_map(length, length, CV_8UC1, cv::Scalar(0));
+    cv::Mat generalized_voronoi_map(length, length, CV_8UC1, cv::Scalar(0));
 
     for(int i = 0; i < length; i++) /// row
     {
@@ -583,90 +586,58 @@ void CloudProcess::two_dimension_map_generate()
         {
             /// Only keep gray contour part
             if(voronoi_map.ptr<unsigned char>(i)[j] == 150) {
-                thinned_map.ptr<unsigned char>(i)[j] = 255;
+                generalized_voronoi_map.ptr<unsigned char>(i)[j] = 255;
             }
             else
-                thinned_map.ptr<unsigned char>(i)[j] = 0;  /// Black: unknown
+                generalized_voronoi_map.ptr<unsigned char>(i)[j] = 0;  /// Black: unknown
         }
     }
 
-    cv::Mat tangent_map = gvg.tangent_vector(thinned_map, 2);
-
+    cv::Mat tangent_map = gvg.tangent_vector(generalized_voronoi_map, 3, 25);
     cv::Mat restructured_map = cv::Mat::zeros(length, length, CV_8UC1);
-    std::vector<cv::Point3i> clusters;
-    gvg.restructure(thinned_map, tangent_map, restructured_map, clusters, 3, 0.3);
+    std::vector<std::vector<cv::Point>> clusters;
+    gvg.cluster_filter(generalized_voronoi_map, tangent_map, restructured_map, clusters, 4, 3, 0.2);
 
-    for(int i = 0; i < clusters.size(); i++)
+    /// Just to show the clusters
+    cv::Mat cluster_map(length, length, CV_8UC1, cv::Scalar(0));
+    for(int i = 0; i<clusters.size(); i++)
     {
-        restructured_map.ptr<unsigned char>(clusters[i].y)[clusters[i].x] = clusters[i].y * 20;
+        int color = rand() % 200 + 55;
+        for(int j=0; j<clusters[i].size();j++)
+        {
+            //if(i == 0)
+            cluster_map.ptr<unsigned char>(clusters[i][j].y)[clusters[i][j].x] = color;
+        }
     }
 
+    cv::Mat final_map = gvg.restructure(map_eroded, clusters, 5, 0.2);
+
+//    /// For testing the effect of finding polygon contour to pre-process
+//    vector<vector<Point>> contours;
+//    vector<Vec4i> hierarcy;
+//    findContours(map_eroded, contours, hierarcy, 0, CV_CHAIN_APPROX_NONE);
+//
+//    vector<vector<Point>> contours_poly(contours.size());
+//
+//    for (int i = 0; i<contours.size(); i++)
+//    {
+//        approxPolyDP(Mat(contours[i]), contours_poly[i], 15, true);
+//        drawContours(map_eroded, contours_poly, i, Scalar(150), 2, 8);
+//    }
+
+
     //gvg.thinning(thinned_map);
-
-//    /// Find contours
-//    std::vector<std::vector<cv::Point>> contours;
-//    std::vector<cv::Vec4i> hierarchy;
-//
-//    cv::findContours(map_eroded, contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_NONE);
-//    //cv::drawContours(map_eroded, contours, 0, cv::Scalar(150), 2);
-//
-//    /// To do: remove large black pieces inside by flood fill the inner contour
-//
-//    /// Remove points on the edge of the image, Keep obstacle points
-//    std::vector<cv::Point> obstacle_points;
-//    for(int i = 0; i < contours[0].size(); i++)
-//    {
-//        if(contours[0][i].y != 0 && contours[0][i].y != length - 1 && contours[0][i].x != 0 && contours[0][i].x != length - 1)
-//            obstacle_points.push_back(contours[0][i]);
-//    }
-//
-//    /// Draw Contour Obstacle
-//    for(int i = 0; i < obstacle_points.size(); i++)
-//    {
-//        map_eroded.ptr<unsigned char>(obstacle_points[i].y)[obstacle_points[i].x] = 150;
-//    }
-
-
-
-//    /// Find potential windows or door points, Useless
-//    cv::Mat map_contour(length, length, CV_8UC1, cv::Scalar(0));
-//
-//    for(int i = 0; i < length; i++) /// row
-//    {
-//        for(int j = 0; j < length; j++) /// col
-//        {
-//            /// Only keep gray contour part
-//            if(map_eroded.ptr<unsigned char>(i)[j] == 150)
-//            {
-//                /// Judge if the contour point is a potential point by obstacle and free space ratio in a neighbourhood of each contour point
-//                if(map_ob_ratio[i][j] > 0.1 && map_fs_ratio[i][j] > 0.5 && (map_ob_ratio[i][j] + map_fs_ratio[i][j]) > 0.8)
-//                    map_contour.ptr<unsigned char>(i)[j] = 255;
-//                else
-//                    map_contour.ptr<unsigned char>(i)[j] = 150;  /// Gray: ordinary contour and neighbour
-//            }
-//            else
-//                map_contour.ptr<unsigned char>(i)[j] = 0;  /// Black: unknown
-//        }
-//    }
-
-
-
 
     /// Save and show
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map.jpg", map);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_intensity.jpg", map_intensity);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_eroded.jpg", map_eroded);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/thinned_map.jpg", thinned_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/generalized_voronoi_map.jpg", generalized_voronoi_map);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/voronoi_map.jpg", voronoi_map);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/restructured_map.jpg", restructured_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/cluster_map.jpg", cluster_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/final_map.jpg", final_map);
 
-    cv::imshow("map", map);
-    cv::waitKey(50);
-    cv::imshow("map_intensity", map_intensity);
-    cv::waitKey(50);
-    cv::imshow("map_eroded", map_eroded);
-    cv::waitKey(100);
-    cv::imshow("restructured_map", restructured_map);
     cv::waitKey(100);
 }
 

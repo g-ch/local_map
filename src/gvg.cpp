@@ -87,10 +87,10 @@ void GVG::voronoi(cv::Mat &img)
 }
 
 
-void GVG::restructure(cv::Mat &map, cv::Mat &tangent_map, cv::Mat &restructured_map, std::vector<cv::Point3i> &clusters, float radius, float threshold)
+void GVG::cluster_filter(cv::Mat &map, cv::Mat &tangent_map, cv::Mat &restructured_map, std::vector<std::vector<cv::Point>> &result_cluster, int min_points, float radius, float threshold)
 {
     if(map.rows != tangent_map.rows || map.cols != tangent_map.cols) return;
-    vector<Point> points;
+    vector<Point> points;  /// to store all voronoi points
 
     float square_radius = radius * radius;
 
@@ -113,10 +113,11 @@ void GVG::restructure(cv::Mat &map, cv::Mat &tangent_map, cv::Mat &restructured_
     std::vector<int> points_cluster_seq(valid_num, 0);  /// Important answer
 
     int cluster_num = 1;
+    cout<<"Start clustering!"<<endl;
     while(true) /// Loop for clusters
     {
         vector<Point> points_search;  /// To generate a seed
-        vector<int> points_search_seq;  /// From zero
+        vector<int> points_search_seq;  /// From zero, for the search group in each loop
 
         for(int i = 0; i < valid_num; i++)
         {
@@ -165,7 +166,9 @@ void GVG::restructure(cv::Mat &map, cv::Mat &tangent_map, cv::Mat &restructured_
                     float dist = point_sqr_dist(points_search[j], seed_point);
                     if(dist < square_radius)
                     {
-                        if(fabsf(tangent_map.ptr<float>(seed_point.y)[seed_point.x] - tangent_map.ptr<float>(points_search[j].y)[points_search[j].x]) < threshold)
+                        float t1 = tangent_map.ptr<float>(seed_point.y)[seed_point.x];
+                        float t2 = tangent_map.ptr<float>(points_search[j].y)[points_search[j].x];
+                        if(t1 > 0.f && t2 > 0.f && fabsf(t1 - t2) < threshold)
                         {
                             counter_this_seed ++;
                             near_points.push_back(points_search[j]);
@@ -209,32 +212,297 @@ void GVG::restructure(cv::Mat &map, cv::Mat &tangent_map, cv::Mat &restructured_
         }
 
         cluster_num ++;
-    }
+    } ///end of loop
 
+    cluster_num -= 1;
     /// Test showing
-    cout<<cluster_num<<endl;
-    for(int i = 0; i < points_cluster_seq.size(); i++)
+    cout<<"Original cluster number = "<< cluster_num<<endl;
+
+
+//    std::vector<std::vector<cv::Point>> result_cluster;
+//
+//    result_cluster.clear();
+//    clusters.clear();
+//
+//    for(int i=0; i < valid_num; i++)
+//    {
+//        Point3i p;
+//        p.x = points[i].x;
+//        p.y = points[i].y;
+//        p.z = points_cluster_seq[i];
+//        clusters.push_back(p);
+//    }
+
+    /// Store cluster result
+    for(int i=0; i<cluster_num; i++)
     {
-        cout<<"cluster: "<<points_cluster_seq[i] << ", ";
+        std::vector<cv::Point> temp_cluster;
+        for(int j = 0; j< valid_num; j++)
+        {
+            if(points_cluster_seq[j] == i)
+            {
+                cv::Point p;
+                p.x = points[j].x;
+                p.y = points[j].y;
+                temp_cluster.push_back(p);
+            }
+        }
+        if(temp_cluster.size() > min_points)
+            result_cluster.push_back(temp_cluster);
     }
-    cout<<endl;
-
-
-    /// Give result
-    clusters.clear();
-    for(int i=0; i < valid_num; i++)
-    {
-        Point3i p;
-        p.x = points[i].x;
-        p.y = points[i].y;
-        p.z = points_cluster_seq[i];
-        clusters.push_back(p);
-    }
-
+    cout<<"Keep cluster number = "<< result_cluster.size()<<endl;
 }
 
 
-cv::Mat GVG::tangent_vector(cv::Mat &input_img, int window_size)
+cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> &cluster, float max_dist_error, float max_slope_error)
+{
+    /// This will restructure the area with the clusters and valid area
+    cv::Mat output_img(area_map.rows, area_map.cols, CV_8UC1, cv::Scalar(0));
+
+    float max_dist_error_sqr = max_dist_error * max_dist_error;
+    float min_slope_transvection = 1.0 - max_slope_error;
+
+    int max_step = sqrt(area_map.rows * area_map.rows + area_map.cols * area_map.cols);
+    cout<<"max_step="<<max_step<<endl;
+    std::vector<std::vector<cv::Point>> artificial_clusters;
+    std::vector<cv::Vec4f> line_para_clusters;
+    std::vector<std::vector<cv::Point>> end_points_clusters;
+
+    std::vector<std::vector<cv::Point>> final_end_points_clusters; /// Store the merged lines
+
+    /// Now we fit all the points in each cluster to a line
+    for(int i=0; i<cluster.size(); i++)
+    {
+        std::vector<cv::Point> temp_cluster;
+        std::vector<cv::Point> end_points_this;
+        cv::Vec4f line_para;
+
+        line_fit(area_map, cluster[i], line_para, temp_cluster, end_points_this, max_step);
+
+        line_para_clusters.push_back(line_para);
+        artificial_clusters.push_back(temp_cluster);
+        end_points_clusters.push_back(end_points_this);
+    }
+
+    cout<<"end_points_clusters=" << end_points_clusters.size()<<endl;
+//    for(int i = 0; i < end_points_clusters.size(); i++)
+//    {
+//        cv::line(output_img, end_points_clusters[i][0], end_points_clusters[i][1], cv::Scalar(150), 2);
+//    }
+
+    /// Merge lines
+    for(int h=0; h<artificial_clusters.size()-1; h++)
+    {
+        for(int k=h+1; k<artificial_clusters.size(); k++)
+        {
+            bool dist_check_passed = false;
+            bool slope_check_passed = false;
+
+            /// Check distance threshold by calculating distance from end points of one line to every points of another line
+            if(!dist_check_passed)
+            {
+                for(int i=0; i<artificial_clusters[k].size(); i++)  /// end points of h to points in k
+                {
+                    float dist1 = point_sqr_dist(end_points_clusters[h][0], artificial_clusters[k][i]);
+                    float dist2 = point_sqr_dist(end_points_clusters[h][1], artificial_clusters[k][i]);
+
+                    if(dist1 < max_dist_error_sqr || dist2 < max_dist_error_sqr)
+                    {
+                        dist_check_passed = true;
+                        break;
+                    }
+                }
+            }
+
+            if(!dist_check_passed)
+            {
+                for(int i=0; i<artificial_clusters[h].size(); i++)  /// end points of k to points in h
+                {
+                    float dist1 = point_sqr_dist(end_points_clusters[k][0], artificial_clusters[h][i]);
+                    float dist2 = point_sqr_dist(end_points_clusters[k][1], artificial_clusters[h][i]);
+
+                    if(dist1 < max_dist_error_sqr || dist2 < max_dist_error_sqr)
+                    {
+                        dist_check_passed = true;
+                        break;
+                    }
+                }
+            }
+
+            /// Now check slope
+            if(dist_check_passed)
+            {
+                /// Use transvection of the two normalized direction vectors to judge if the two lines are nealy parallel
+                float slope_transvection = line_para_clusters[h][0] * line_para_clusters[k][0] + line_para_clusters[h][1] * line_para_clusters[k][1];
+
+                if(slope_transvection > min_slope_transvection)
+                {
+                    slope_check_passed = true;
+                }
+            }
+
+            /// Now merge if necessary, push the values of h to k and continue with h+1
+            if(dist_check_passed && slope_check_passed)
+            {
+//                std::vector<std::vector<cv::Point>> artificial_clusters;
+//                std::vector<cv::Vec4f> line_para_clusters;
+//                std::vector<std::vector<cv::Point>> end_points_clusters;
+
+                std::vector<cv::Point> cluster_merged;
+                std::vector<cv::Point> temp_cluster;
+                std::vector<cv::Point> end_points_this;
+                cv::Vec4f line_para;
+
+                /// Merge all points of line k and h
+                for(int m = 0; m < cluster[h].size(); m++)
+                {
+                    cluster_merged.push_back(cluster[h][m]);
+                }
+                for(int n = 0; n < cluster[k].size(); n++)
+                {
+                    cluster_merged.push_back(cluster[k][n]);
+                }
+
+                line_fit(area_map, cluster_merged, line_para, temp_cluster, end_points_this, max_step);
+
+                /// Erase and insert
+                artificial_clusters.erase(artificial_clusters.begin() + h);
+                artificial_clusters.erase(artificial_clusters.begin() + k-1);
+
+                line_para_clusters.erase(line_para_clusters.begin() + h);
+                line_para_clusters.erase(line_para_clusters.begin() + k-1);
+
+                end_points_clusters.erase(end_points_clusters.begin() + h);
+                end_points_clusters.erase(end_points_clusters.begin() + k-1);
+
+                artificial_clusters.insert(artificial_clusters.begin()+k-1, temp_cluster);
+                line_para_clusters.insert(line_para_clusters.begin()+k-1, line_para);
+                end_points_clusters.insert(end_points_clusters.begin()+k-1, end_points_this);
+
+                /// For next loop
+                h = h - 1;  /// Important
+                break;
+
+            }
+            else
+            {
+                /// Only keep end points, which is really useful
+                final_end_points_clusters.push_back(end_points_clusters[h]);
+            }
+        }
+    }
+
+    /// Don't forget to add the last cluster
+    final_end_points_clusters.push_back(end_points_clusters[end_points_clusters.size()-1]);
+
+    /// Draw merged lines
+    cout<<"final_end_points_clusters=" << final_end_points_clusters.size()<<endl;
+    for(int i = 0; i < final_end_points_clusters.size(); i++)
+    {
+        cv::line(output_img, final_end_points_clusters[i][0], final_end_points_clusters[i][1], cv::Scalar(255), 2);
+    }
+
+    return output_img;
+}
+
+
+void GVG::line_fit(cv::Mat &area_map, std::vector<cv::Point> &cluster, cv::Vec4f &line_para, std::vector<cv::Point> &artificial_cluster, std::vector<cv::Point> &end_points_this, int max_step)
+{
+    cv::fitLine(cluster, line_para, cv::DIST_L2, 0, 1e-2, 1e-2);
+
+
+    float length = sqrt(line_para[0]*line_para[0] + line_para[1]*line_para[1]);
+    float direction_x = line_para[0] / length;
+    float direction_y = line_para[1] / length;
+    line_para[0] = direction_x;  /// Store normalized direction vector
+    line_para[1] = direction_y;
+
+    cv::Point point0, point1, point2;
+    /// NOTE: This point is not among points cluster, but a created one. So we need to find one
+    point1.x = line_para[2] + 10.f*direction_x;
+    point1.y = line_para[3] + 10.f*direction_y;
+    point2.x = line_para[2] - 10.f*direction_x;
+    point2.y = line_para[3] - 10.f*direction_y;
+
+    float line_dist = 20.f;
+    float min_dist_temp = 10000.f;
+    for(int i = 0; i < cluster.size(); i++)
+    {
+        float dist_temp = point_to_line_dist(point1, point2, cluster[i], line_dist);
+        if(dist_temp < min_dist_temp)
+        {
+            min_dist_temp = dist_temp;
+            point0 = cluster[i];
+        }
+    }
+
+
+    cout<<line_para[0]<<","<<line_para[1]<<","<<point0.x<<","<<point0.y<<endl;
+    artificial_cluster.push_back(point0);
+
+    cv::Point point_end1, point_end2;
+
+    /// One direction
+    cv::Point last_check_point;
+    for(int j=0; j<max_step; j++)
+    {
+        int delt_x = j * direction_x;
+        int delt_y = j * direction_y;
+
+        cv::Point check_point;
+        check_point.x = point0.x + delt_x;
+        check_point.y = point0.y + delt_y;
+
+
+        if(area_map.ptr<unsigned char>(check_point.y)[check_point.x] > 0)
+        {
+            artificial_cluster.push_back(check_point);
+            last_check_point.x = check_point.x;
+            last_check_point.y = check_point.y;
+            cout<<" x=" << check_point.x;
+            cout<<" y=" << check_point.y;
+        }
+        else
+        {
+            point_end1.x = last_check_point.x;  /// point_end1
+            point_end1.y = last_check_point.y;  /// point_end1
+            cout << "break" <<endl;
+            break;
+        }
+    }
+    /// Opposite direction
+    for(int j=0; j<max_step; j++)
+    {
+        int delt_x = -j * direction_x;
+        int delt_y = -j * direction_y;
+
+        cv::Point check_point;
+        check_point.x = point0.x + delt_x;
+        check_point.y = point0.y + delt_y;
+
+        if(area_map.ptr<unsigned char>(check_point.y)[check_point.x] > 0)
+        {
+            artificial_cluster.push_back(check_point);
+            last_check_point.x = check_point.x;
+            last_check_point.y = check_point.y;
+        }
+        else
+        {
+            point_end2.x = last_check_point.x;  /// point_end2
+            point_end2.y = last_check_point.y;   /// point_end2
+            break;
+        }
+    }
+
+    cout<<endl<<"point_end1="<<point_end1.x<<"," << point_end1.y<<"; ";
+    cout<<endl<<"point_end2="<<point_end2.x<<"," << point_end2.y<<endl;
+    end_points_this.push_back(point_end1);
+    end_points_this.push_back(point_end2);
+}
+
+
+
+cv::Mat GVG::tangent_vector(cv::Mat &input_img, int window_size, float fit_threshold)
 {
     /// 0~1.0, 0:invalid; 0.1-1.0: 0~180 degree
     cv::Mat output_img(input_img.rows, input_img.cols, CV_32F, cv::Scalar(0));
@@ -265,25 +533,68 @@ cv::Mat GVG::tangent_vector(cv::Mat &input_img, int window_size)
                 }
             }
 
-            /// Calculate tangent vector, average for directions between every two points
+//            /// Calculate tangent vector, average for directions between every two points
+//            int nearby_num = nearby_points.size();
+//            int counter = 0;
+//            double tangent = 0.0;
+//            if(nearby_num > 1)
+//            {
+//                for(int k = 0; k < nearby_num - 1; k++)
+//                {
+//                    for(int h = k + 1; h < nearby_num; h++)
+//                    {
+//                        int delt_x = nearby_points[k].x - nearby_points[h].x;
+//                        int delt_y = abs(nearby_points[k].y - nearby_points[h].y);
+//
+//                        tangent += atan2((double)delt_y, (double)delt_x);
+//                        counter ++;
+//                    }
+//                }
+//                tangent = tangent / counter; //0 ~ PI
+//                output_img.ptr<float>(i)[j] = tangent / 3.5 + 0.1; /// 0.1-1.0: 0~180 degree
+//            }
+
+            /// Calculate tangent vector, use two points as seeds to generate a line and find the best fit
             int nearby_num = nearby_points.size();
-            int counter = 0;
-            double tangent = 0.0;
+
             if(nearby_num > 1)
             {
+                double tangent = 0.0;
+                float min_dist = window_size * 10.f;
+                int def_p1_seq;
+                int def_p2_seq;
+
                 for(int k = 0; k < nearby_num - 1; k++)
                 {
                     for(int h = k + 1; h < nearby_num; h++)
                     {
-                        int delt_x = nearby_points[k].x - nearby_points[h].x;
-                        int delt_y = abs(nearby_points[k].y - nearby_points[h].y);
+                        float line_length = point_dist(nearby_points[k], nearby_points[h]);
+                        float dist_temp = 0.f;
+                        for(int w=0; w<nearby_num; w++)
+                        {
+                            //dist_temp += point_to_line_sqr_dist(nearby_points[k], nearby_points[h], nearby_points[w], line_length);
+                            dist_temp += point_to_line_dist(nearby_points[k], nearby_points[h], nearby_points[w], line_length);
+                        }
 
-                        tangent += atan2((double)delt_y, (double)delt_x);
-                        counter ++;
+                        if(dist_temp < min_dist)
+                        {
+                            min_dist = dist_temp;
+                            def_p1_seq = k;
+                            def_p2_seq = h;
+                        }
+
                     }
                 }
-                tangent = tangent / counter; //0 ~ PI
-                output_img.ptr<float>(i)[j] = tangent / 3.5 + 0.1; /// 0.1-1.0: 0~180 degree
+
+                if(min_dist < fit_threshold)
+                {
+                    int delt_x = nearby_points[def_p1_seq].x - nearby_points[def_p2_seq].x;
+                    int delt_y = abs(nearby_points[def_p1_seq].y - nearby_points[def_p2_seq].y);
+
+                    tangent = atan2((double)delt_y, (double)delt_x);
+                    output_img.ptr<float>(i)[j] = tangent / 3.5 + 0.1; /// 0.1-1.0: 0~180 degree
+                }
+
             }
         }
     }
@@ -292,6 +603,39 @@ cv::Mat GVG::tangent_vector(cv::Mat &input_img, int window_size)
 }
 
 
+float GVG::point_to_line_dist(cv::Point line_a, cv::Point line_b, cv::Point p, float line_length)
+{
+    return sqrt(point_to_line_sqr_dist(line_a, line_b, p, line_length)); /// return length of Line PC
+}
+
+
+float GVG::point_to_line_sqr_dist(cv::Point line_a, cv::Point line_b, cv::Point p, float line_length)
+{
+    float ap_x = p.x - line_a.x;
+    float ap_y = p.y - line_a.y;
+    float ab_x = line_b.x - line_a.x;
+    float ab_y = line_b.y - line_a.y;
+
+    float ab_i_x = ab_x / line_length;
+    float ab_i_y = ab_y / line_length;
+
+    /// C is P's projective point on line AB
+    float ac_length = (ap_x * ab_x + ap_y * ab_y) / line_length;
+
+    float ac_x = ac_length * ab_i_x;
+    float ac_y = ac_length * ab_i_y;
+
+    float pc_x = ac_x - ap_x;
+    float pc_y = ac_y - ap_y;
+
+    return pc_x*pc_x + pc_y*pc_y; /// return square length of Line PC
+
+}
+
+float GVG::point_dist(cv::Point &p1, cv::Point &p2)
+{
+    return sqrt(p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y);
+}
 
 float GVG::point_sqr_dist(cv::Point &p1, cv::Point &p2)
 {
