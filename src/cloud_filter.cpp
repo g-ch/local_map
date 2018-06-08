@@ -593,10 +593,10 @@ void CloudProcess::two_dimension_map_generate()
         }
     }
 
-    cv::Mat tangent_map = gvg.tangent_vector(generalized_voronoi_map, 3, 25);
+    cv::Mat tangent_map = gvg.tangent_vector(generalized_voronoi_map, 3, 50);
     cv::Mat restructured_map = cv::Mat::zeros(length, length, CV_8UC1);
     std::vector<std::vector<cv::Point>> clusters;
-    gvg.cluster_filter(generalized_voronoi_map, tangent_map, restructured_map, clusters, 4, 3, 0.2);
+    gvg.cluster_filter(generalized_voronoi_map, tangent_map, restructured_map, clusters, 3, 4, 0.3);
 
     /// Just to show the clusters
     cv::Mat cluster_map(length, length, CV_8UC1, cv::Scalar(0));
@@ -609,8 +609,7 @@ void CloudProcess::two_dimension_map_generate()
             cluster_map.ptr<unsigned char>(clusters[i][j].y)[clusters[i][j].x] = color;
         }
     }
-
-    cv::Mat final_map = gvg.restructure(map_eroded, clusters, 5, 0.2);
+    cv::Mat final_map = gvg.restructure(map_eroded, clusters, 8, 0.5);
 
 //    /// For testing the effect of finding polygon contour to pre-process
 //    vector<vector<Point>> contours;
