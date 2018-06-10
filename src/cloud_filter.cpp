@@ -593,10 +593,10 @@ void CloudProcess::two_dimension_map_generate()
         }
     }
 
-    cv::Mat tangent_map = gvg.tangent_vector(generalized_voronoi_map, 3, 50);
+    cv::Mat tangent_map = gvg.tangent_vector(generalized_voronoi_map, 2, 50);
     cv::Mat restructured_map = cv::Mat::zeros(length, length, CV_8UC1);
     std::vector<std::vector<cv::Point>> clusters;
-    gvg.cluster_filter(generalized_voronoi_map, tangent_map, restructured_map, clusters, 3, 4, 0.3);
+    gvg.cluster_filter(generalized_voronoi_map, tangent_map, restructured_map, clusters, 3, 3, 0.2);
 
     /// Just to show the clusters
     cv::Mat cluster_map(length, length, CV_8UC1, cv::Scalar(0));
@@ -609,7 +609,7 @@ void CloudProcess::two_dimension_map_generate()
             cluster_map.ptr<unsigned char>(clusters[i][j].y)[clusters[i][j].x] = color;
         }
     }
-    cv::Mat final_map = gvg.restructure(map_eroded, clusters, 8, 0.5);
+    cv::Mat final_map = gvg.restructure(map_eroded, clusters, 4, 0.1);
 
 //    /// For testing the effect of finding polygon contour to pre-process
 //    vector<vector<Point>> contours;
@@ -628,14 +628,14 @@ void CloudProcess::two_dimension_map_generate()
     //gvg.thinning(thinned_map);
 
     /// Save and show
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map.jpg", map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_intensity.jpg", map_intensity);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_eroded.jpg", map_eroded);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/generalized_voronoi_map.jpg", generalized_voronoi_map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/voronoi_map.jpg", voronoi_map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/restructured_map.jpg", restructured_map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/cluster_map.jpg", cluster_map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/final_map.jpg", final_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/map.jpg", map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/map_intensity.jpg", map_intensity);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/map_eroded.jpg", map_eroded);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/generalized_voronoi_map.jpg", generalized_voronoi_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/voronoi_map.jpg", voronoi_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/restructured_map.jpg", restructured_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/cluster_map.jpg", cluster_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/final_map.jpg", final_map);
 
     cv::waitKey(100);
 }

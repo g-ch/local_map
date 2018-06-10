@@ -36,7 +36,9 @@ private:
 
     float point_to_line_sqr_dist(cv::Point line_a, cv::Point line_b, cv::Point p, float line_length);
 
-    void line_fit(cv::Mat &area_map, std::vector<cv::Point> &cluster, cv::Vec4f &line_para, std::vector<cv::Point> &temp_cluster, std::vector<cv::Point> &end_points_this, int max_step);
+    bool line_fit(cv::Mat &area_map, std::vector<cv::Point> &cluster, cv::Vec4f &line_para, std::vector<cv::Point> &temp_cluster, std::vector<cv::Point> &end_points_this, int max_step);
+
+    bool in_mat_range(cv::Point &p, cv::Mat &area_map, int shrink_size = 0);
 };
 
 #endif //LOCAL_MAP_GVG_H
