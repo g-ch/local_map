@@ -593,10 +593,10 @@ void CloudProcess::two_dimension_map_generate()
         }
     }
 
-    cv::Mat tangent_map = gvg.tangent_vector(generalized_voronoi_map, 2, 30);
+    cv::Mat tangent_map = gvg.tangent_vector(generalized_voronoi_map, 2, 10);
     cv::Mat restructured_map = cv::Mat::zeros(length, length, CV_8UC1);
     std::vector<std::vector<cv::Point>> clusters;
-    gvg.cluster_filter(generalized_voronoi_map, tangent_map, restructured_map, clusters, 3, 4, 0.2);
+    gvg.cluster_filter(generalized_voronoi_map, tangent_map, restructured_map, clusters, 3, 4, 0.3);
 
     /// Just to show the clusters
     cv::Mat cluster_map(length, length, CV_8UC1, cv::Scalar(0));
@@ -626,7 +626,17 @@ void CloudProcess::two_dimension_map_generate()
 //    }
 
 
+
     //gvg.thinning(generalized_voronoi_map);
+
+    cv::Mat tangent_show_img(length, length, CV_8UC1, cv::Scalar(0));
+    for(int i=0; i < tangent_show_img.rows; i++)
+    {
+        for(int j=0; j<tangent_show_img.cols; j++)
+        {
+            tangent_show_img.ptr<unsigned char>(i)[j] = (unsigned char)(tangent_map.ptr<float>(i)[j] * 255);
+        }
+    }
 
     /// Save and show
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/map.jpg", map);
@@ -637,6 +647,7 @@ void CloudProcess::two_dimension_map_generate()
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/restructured_map.jpg", restructured_map);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/cluster_map.jpg", cluster_map);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/final_map.jpg", final_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/tangent_show_img.jpg", tangent_show_img);
 
     cv::waitKey(100);
 }

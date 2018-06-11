@@ -50,6 +50,9 @@
       <change beforePath="$PROJECT_DIR$/data/Original/cluster_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/cluster_map.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/final_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/final_map.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/generalized_voronoi_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/generalized_voronoi_map.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Original/map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/map.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Original/map_eroded.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/map_eroded.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Original/map_intensity.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/map_intensity.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/voronoi_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/voronoi_map.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cloud_filter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cloud_filter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cloud_node.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cloud_node.cpp" afterDir="false" />
@@ -70,7 +73,7 @@
       <file leaf-file-name="cloud_filter.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/include/cloud_filter.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="550">
+            <state relative-caret-position="22">
               <caret line="25" selection-start-line="25" selection-end-line="25" />
               <folding>
                 <element signature="e#109#126#0" expanded="true" />
@@ -82,7 +85,7 @@
       <file leaf-file-name="cloud_filter.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="707">
+            <state relative-caret-position="770">
               <caret line="595" column="75" selection-start-line="595" selection-start-column="75" selection-end-line="595" selection-end-column="75" />
               <folding>
                 <element signature="e#42#78#0" expanded="true" />
@@ -94,7 +97,7 @@
       <file leaf-file-name="cloud_node.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1056">
+            <state relative-caret-position="838">
               <caret line="153" column="107" selection-start-line="153" selection-start-column="107" selection-end-line="153" selection-end-column="107" />
               <folding>
                 <element signature="e#42#78#0" expanded="true" />
@@ -118,8 +121,8 @@
       <file leaf-file-name="gvg.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gvg.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="748">
-              <caret line="58" column="19" selection-start-line="58" selection-start-column="19" selection-end-line="58" selection-end-column="19" />
+            <state relative-caret-position="1100">
+              <caret line="773" column="47" lean-forward="true" selection-start-line="773" selection-start-column="20" selection-end-line="773" selection-end-column="47" />
             </state>
           </provider>
         </entry>
@@ -343,12 +346,12 @@
       <workItem from="1527732057062" duration="71442000" />
       <workItem from="1528427033991" duration="172000" />
       <workItem from="1528595909749" duration="11830000" />
-      <workItem from="1528680986590" duration="5987000" />
+      <workItem from="1528680986590" duration="10554000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="234660000" />
+    <option name="totallyTimeSpent" value="239227000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-11" width="1017" height="1932" extended-state="6" />
@@ -356,11 +359,11 @@
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.03448276" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.48374385" weight="0.12444934" />
+      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.4679803" weight="0.12444934" />
       <window_info anchor="bottom" id="CMake" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.35763547" side_tool="true" visible="true" weight="0.1222467" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.37339902" side_tool="true" visible="true" weight="0.1222467" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.64236456" visible="true" weight="0.1222467" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.626601" visible="true" weight="0.1222467" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -712,16 +715,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/include/cloud_filter.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="550">
-          <caret line="25" selection-start-line="25" selection-end-line="25" />
-          <folding>
-            <element signature="e#109#126#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/imgproc.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="436">
@@ -746,16 +739,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gvg.cpp">
+    <entry file="file://$PROJECT_DIR$/include/cloud_filter.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="748">
-          <caret line="58" column="19" selection-start-line="58" selection-start-column="19" selection-end-line="58" selection-end-column="19" />
+        <state relative-caret-position="22">
+          <caret line="25" selection-start-line="25" selection-end-line="25" />
+          <folding>
+            <element signature="e#109#126#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="707">
+        <state relative-caret-position="770">
           <caret line="595" column="75" selection-start-line="595" selection-start-column="75" selection-end-line="595" selection-end-column="75" />
           <folding>
             <element signature="e#42#78#0" expanded="true" />
@@ -763,9 +759,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/gvg.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1100">
+          <caret line="773" column="47" lean-forward="true" selection-start-line="773" selection-start-column="20" selection-end-line="773" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1056">
+        <state relative-caret-position="838">
           <caret line="153" column="107" selection-start-line="153" selection-start-column="107" selection-end-line="153" selection-end-column="107" />
           <folding>
             <element signature="e#42#78#0" expanded="true" />

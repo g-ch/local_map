@@ -676,6 +676,8 @@ cv::Mat GVG::tangent_vector(cv::Mat &input_img, int window_size, float fit_thres
     /// 0~1.0, 0:invalid; 0.1-1.0: 0~180 degree
     cv::Mat output_img(input_img.rows, input_img.cols, CV_32F, cv::Scalar(0));
 
+    float fit_threshold_sqr = fit_threshold * fit_threshold;
+
     for(int i = 0; i < input_img.rows; i++)
     {
         for(int j = 0; j < input_img.cols; j++)
@@ -744,14 +746,14 @@ cv::Mat GVG::tangent_vector(cv::Mat &input_img, int window_size, float fit_thres
                         for(int w=0; w<nearby_num; w++)
                         {
                             //dist_temp += point_to_line_sqr_dist(nearby_points[k], nearby_points[h], nearby_points[w], line_length);
-                            dist_temp += point_to_line_dist(nearby_points[k], nearby_points[h], nearby_points[w], line_length);
+                            dist_temp += point_to_line_sqr_dist(nearby_points[k], nearby_points[h], nearby_points[w], line_length);
                         }
 
                         /// A weight between distance of center point to line and nearby points to line
                         cv::Point center_point;
                         center_point.x = j;
                         center_point.y = i;
-                        dist_temp = 0.1*point_to_line_dist(nearby_points[k], nearby_points[h],center_point,line_length) + 0.9*dist_temp;
+                        dist_temp = 0.3*point_to_line_sqr_dist(nearby_points[k], nearby_points[h],center_point,line_length) + 0.7*dist_temp;
 
                         if(dist_temp < min_dist)
                         {
@@ -763,7 +765,7 @@ cv::Mat GVG::tangent_vector(cv::Mat &input_img, int window_size, float fit_thres
                     }
                 }
 
-                if(min_dist < fit_threshold)
+                if(min_dist < fit_threshold_sqr)
                 {
                     int delt_x = nearby_points[def_p1_seq].x - nearby_points[def_p2_seq].x;
                     int delt_y = abs(nearby_points[def_p1_seq].y - nearby_points[def_p2_seq].y);
