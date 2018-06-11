@@ -36,33 +36,39 @@ void GVG::draw_voronoi( Mat& img, Subdiv2D& subdiv )
 
         int isize = ifacet.size();
 
-        for(size_t k = 0; k < isize - 1; k++)  /// Condition: in the image range, in white area
+        for(size_t k = 0; k < isize - 1; k++)
         {
-            if(ifacet[k].y > 0 && ifacet[k].y < img.rows && ifacet[k].x > 0 && ifacet[k].x < img.cols)
-            {
-                if(ifacet[k+1].y > 0 && ifacet[k+1].y < img.rows && ifacet[k+1].x > 0 && ifacet[k+1].x < img.cols)
-                {
-                    if(img.ptr<unsigned char>(ifacet[k].y)[ifacet[k].x] > 200)
-                    {
-                        if(img.ptr<unsigned char>(ifacet[k+1].y)[ifacet[k+1].x] > 200)
-                            line(img, ifacet[k], ifacet[k+1], color, 1);
-                    }
-                }
-                else
-                {
-                    if(img.ptr<unsigned char>(ifacet[k].y)[ifacet[k].x] > 200)
-                    {
-                        line(img, ifacet[k], ifacet[k], color, 1);
-                    }
-                }
+            if(in_mat_range(ifacet[k],img) && img.ptr<unsigned char>(ifacet[k].y)[ifacet[k].x] > 200)
+                line(img, ifacet[k], ifacet[k], color, 1);
+        }
 
-            }
-        }
-        if(img.ptr<unsigned char>(ifacet[0].y)[ifacet[0].x] > 200 && ifacet[0].y > 0 && ifacet[0].y < img.rows && ifacet[0].x > 0 && ifacet[0].x < img.cols)
-        {
-            if(img.ptr<unsigned char>(ifacet[isize-1].y)[ifacet[isize-1].x] > 200 && ifacet[isize-1].y > 0 && ifacet[isize-1].y < img.rows && ifacet[isize-1].x > 0 && ifacet[isize-1].x < img.cols)
-                line(img, ifacet[isize-1], ifacet[0], color, 1);
-        }
+//        for(size_t k = 0; k < isize - 1; k++)  /// Condition: in the image range, in white area
+//        {
+//            if(ifacet[k].y > 0 && ifacet[k].y < img.rows && ifacet[k].x > 0 && ifacet[k].x < img.cols)
+//            {
+//                if(ifacet[k+1].y > 0 && ifacet[k+1].y < img.rows && ifacet[k+1].x > 0 && ifacet[k+1].x < img.cols)
+//                {
+//                    if(img.ptr<unsigned char>(ifacet[k].y)[ifacet[k].x] > 200)
+//                    {
+//                        if(img.ptr<unsigned char>(ifacet[k+1].y)[ifacet[k+1].x] > 200)
+//                            line(img, ifacet[k], ifacet[k+1], color, 1);
+//                    }
+//                }
+//                else
+//                {
+//                    if(img.ptr<unsigned char>(ifacet[k].y)[ifacet[k].x] > 200)
+//                    {
+//                        line(img, ifacet[k], ifacet[k], color, 1);
+//                    }
+//                }
+//
+//            }
+//        }
+//        if(img.ptr<unsigned char>(ifacet[0].y)[ifacet[0].x] > 200 && ifacet[0].y > 0 && ifacet[0].y < img.rows && ifacet[0].x > 0 && ifacet[0].x < img.cols)
+//        {
+//            if(img.ptr<unsigned char>(ifacet[isize-1].y)[ifacet[isize-1].x] > 200 && ifacet[isize-1].y > 0 && ifacet[isize-1].y < img.rows && ifacet[isize-1].x > 0 && ifacet[isize-1].x < img.cols)
+//                line(img, ifacet[isize-1], ifacet[0], color, 1);
+//        }
     }
 }
 
@@ -148,14 +154,8 @@ void GVG::cluster_filter(cv::Mat &map, cv::Mat &tangent_map, cv::Mat &restructur
 
         points_cluster_seq[seed_seq_valid] = cluster_num;
 
-        points_search.erase(points_search.begin() + seed_seq_search);
-        points_search_seq.erase(points_search_seq.begin() + seed_seq_search);
-
-        search_num -= 1;
-
         /// To store intersection sequence
         std::vector<int> intersection_queue;
-        int quene_size = 0;
         bool if_quene = false;
 
         while(true) /// Find points in one cluster
@@ -191,16 +191,15 @@ void GVG::cluster_filter(cv::Mat &map, cv::Mat &tangent_map, cv::Mat &restructur
             if(counter_this_seed >= 2)
             {
                 intersection_queue.push_back(seed_seq_search);
-                quene_size ++;
             }
-            else if(counter_this_seed == 0 && if_quene)
+
+            if(if_quene)
             {
-                quene_size --;
-                points_search.erase(points_search.end() - 1); /// Delete last one
+                intersection_queue.erase(intersection_queue.end()-1);
+                if_quene = false;
             }
 
-
-            if(counter_this_seed == 0 && quene_size < 1) break;
+            if(counter_this_seed == 0 && intersection_queue.size() < 1) break;
 
             /// Choose one as a new seed
             if(counter_this_seed > 0)
@@ -209,11 +208,11 @@ void GVG::cluster_filter(cv::Mat &map, cv::Mat &tangent_map, cv::Mat &restructur
                 seed_seq_search = near_points_seq[0];
                 seed_seq_valid = points_search_seq[seed_seq_search];
                 points_cluster_seq[seed_seq_valid] = cluster_num;
-                if_quene = false;
+
             }
             else
             {
-                seed_seq_search = intersection_queue[quene_size - 1];
+                seed_seq_search = intersection_queue[intersection_queue.size() - 1];
                 seed_point = points_search[seed_seq_search];
                 seed_seq_valid = points_search_seq[seed_seq_search];
                 if_quene = true;
