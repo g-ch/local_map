@@ -23,7 +23,7 @@ public:
 
     cv::Mat tangent_vector(cv::Mat &input_img, int window_size, float fit_threshold = 100.f);
 
-    cv::Mat restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> &cluster, float max_dist, float max_slope_error); /// max_slope_error < 1.0
+    cv::Mat restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> &cluster, int min_line_length, float max_dist, float max_slope_error); /// max_slope_error < 1.0
 
 private:
     float point_sqr_dist(cv::Point &p1, cv::Point &p2);

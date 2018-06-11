@@ -610,7 +610,7 @@ void CloudProcess::two_dimension_map_generate()
             cluster_map.ptr<unsigned char>(clusters[i][j].y)[clusters[i][j].x] = color;
         }
     }
-    cv::Mat final_map = gvg.restructure(map_eroded, clusters, 4, 0.1);
+    cv::Mat final_map = gvg.restructure(map_eroded, clusters, 20, 4, 0.1);
 
 //    /// For testing the effect of finding polygon contour to pre-process
 //    vector<vector<Point>> contours;

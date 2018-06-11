@@ -248,7 +248,7 @@ void GVG::cluster_filter(cv::Mat &map, cv::Mat &tangent_map, cv::Mat &restructur
 }
 
 
-cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> &cluster, float max_dist_error, float max_slope_error)
+cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> &cluster, int min_line_length, float max_dist_error, float max_slope_error)
 {
     /// This will restructure the area with the clusters and valid area
     cv::Mat output_img(area_map.rows, area_map.cols, CV_8UC1, cv::Scalar(0));
@@ -382,15 +382,12 @@ cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> 
             /// Now merge if necessary, push the values of h to k and continue with h+1
             if(dist_check_passed && slope_check_passed)
             {
-
                 std::vector<cv::Point> cluster_merged;
                 std::vector<cv::Point> temp_cluster;
                 std::vector<cv::Point> end_points_this;
                 cv::Vec4f line_para;
 
                 /// Merge all points of line k and h
-
-                /// NOTE: WHY??????? use original data would give wrong fitted line
                 for(int m = 0; m < cluster[h].size(); m++)
                 {
                     cluster_merged.push_back(cluster[h][m]);
@@ -399,16 +396,6 @@ cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> 
                 {
                     cluster_merged.push_back(cluster[k][n]);
                 }
-
-//                for(int m = 0; m < artificial_clusters[h].size(); m++)
-//                {
-//                    cluster_merged.push_back(artificial_clusters[h][m]);
-//                }
-//                for(int n = 0; n < artificial_clusters[k].size(); n++)
-//                {
-//                    cluster_merged.push_back(artificial_clusters[k][n]);
-//                }
-
 
                 line_fit(area_map, cluster_merged, line_para, temp_cluster, end_points_this, max_step);
 
@@ -450,16 +437,22 @@ cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> 
 
             }
 
+
+
             cout<<"Merge condition: "<<dist_check_passed<<", "<<slope_check_passed<<endl;
         }
     }
 
 
+
     cout<<"end_points_clusters=" << end_points_clusters.size()<<endl;
+
+    float length_threshold = min_line_length * min_line_length;
     for(int i = 0; i < end_points_clusters.size(); i++)
     {
         cout<<"final cluster = "<< end_points_clusters[i][0] << ", "<<end_points_clusters[i][1] << endl;
-        cv::line(output_img, end_points_clusters[i][0], end_points_clusters[i][1], cv::Scalar(255), 2);
+        if(point_sqr_dist(end_points_clusters[i][0], end_points_clusters[i][1]) > length_threshold)
+            cv::line(output_img, end_points_clusters[i][0], end_points_clusters[i][1], cv::Scalar(255), 2);
     }
 
 
