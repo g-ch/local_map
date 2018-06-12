@@ -594,9 +594,9 @@ void CloudProcess::two_dimension_map_generate()
     }
 
     cv::Mat tangent_map = gvg.tangent_vector(generalized_voronoi_map, 2, 10);
-    cv::Mat restructured_map = cv::Mat::zeros(length, length, CV_8UC1);
+    cv::Mat cluster_origin_map = cv::Mat::zeros(length, length, CV_8UC1);
     std::vector<std::vector<cv::Point>> clusters;
-    gvg.cluster_filter(generalized_voronoi_map, tangent_map, restructured_map, clusters, 3, 4, 0.3);
+    gvg.cluster_filter(generalized_voronoi_map, tangent_map, cluster_origin_map, clusters, 3, 4, 0.3);
 
     /// Just to show the clusters
     cv::Mat cluster_map(length, length, CV_8UC1, cv::Scalar(0));
@@ -610,7 +610,9 @@ void CloudProcess::two_dimension_map_generate()
             cluster_map.ptr<unsigned char>(clusters[i][j].y)[clusters[i][j].x] = color;
         }
     }
-    cv::Mat final_map = gvg.restructure(map_eroded, clusters, 20, 4, 0.1);
+
+    std::vector<cv::Point> base_point_candidates;
+    cv::Mat restructured_map = gvg.restructure(map_eroded, clusters, base_point_candidates, 20, 4, 0.1);
 
 //    /// For testing the effect of finding polygon contour to pre-process
 //    vector<vector<Point>> contours;
@@ -644,9 +646,9 @@ void CloudProcess::two_dimension_map_generate()
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/map_eroded.jpg", map_eroded);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/generalized_voronoi_map.jpg", generalized_voronoi_map);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/voronoi_map.jpg", voronoi_map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/restructured_map.jpg", restructured_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/cluster_origin_map.jpg", cluster_origin_map);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/cluster_map.jpg", cluster_map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/final_map.jpg", final_map);
+    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/restructured_map.jpg", restructured_map);
     cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/tangent_show_img.jpg", tangent_show_img);
 
     cv::waitKey(100);

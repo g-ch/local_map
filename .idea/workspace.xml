@@ -48,41 +48,14 @@
     <list default="true" id="369fccf7-5c59-4cb9-95ca-59a8fe7e42e5" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/cluster_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/cluster_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Original/final_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/final_map.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Original/final_map.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/generalized_voronoi_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/generalized_voronoi_map.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/map.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/map_eroded.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/map_eroded.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/map_intensity.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/map_intensity.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/Original/restructured_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/restructured_map.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/tangent_show_img.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/tangent_show_img.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/voronoi_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/voronoi_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-hall-03/cluster_map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-hall-03/final_map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-hall-03/generalized_voronoi_map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-hall-03/map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-hall-03/map_eroded.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-hall-03/map_intensity.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-hall-03/restructured_map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-hall-03/voronoi_map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-intersection2/cluster_map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-intersection2/final_map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-intersection2/generalized_voronoi_map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-intersection2/map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-intersection2/map_eroded.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-intersection2/map_intensity.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-intersection2/thinned_map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-good-intersection2/voronoi_map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-hall--001/map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-hall--001/map_canny.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-hall--001/map_contour.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-hall--001/map_eroded.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-hall--001/map_fs.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-hall--001/map_intensity.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-hall--001/map_ob.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-intersection-001/map.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-intersection-001/map_eroded.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-intersection-001/map_fs.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-intersection-001/map_intensity.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/result-intersection-001/map_ob.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/include/gvg.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/gvg.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cloud_filter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cloud_filter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/cloud_node.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cloud_node.cpp" afterDir="false" />
@@ -112,11 +85,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cloud_filter.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="cloud_filter.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="682">
-              <caret line="612" column="74" selection-start-line="612" selection-start-column="74" selection-end-line="612" selection-end-column="74" />
+            <state relative-caret-position="858">
+              <caret line="614" column="90" selection-start-line="614" selection-start-column="90" selection-end-line="614" selection-end-column="90" />
               <folding>
                 <element signature="e#42#78#0" expanded="true" />
               </folding>
@@ -124,10 +97,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cloud_node.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="cloud_node.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1122">
+            <state relative-caret-position="1168">
               <caret line="153" column="107" selection-start-line="153" selection-start-column="107" selection-end-line="153" selection-end-column="107" />
               <folding>
                 <element signature="e#42#78#0" expanded="true" />
@@ -140,7 +113,7 @@
         <entry file="file://$PROJECT_DIR$/include/gvg.h">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="550">
-              <caret line="25" column="110" selection-start-line="25" selection-start-column="110" selection-end-line="25" selection-end-column="110" />
+              <caret line="25" column="134" selection-start-line="25" selection-start-column="134" selection-end-line="25" selection-end-column="134" />
               <folding>
                 <element signature="e#91#129#0" expanded="true" />
               </folding>
@@ -151,8 +124,8 @@
       <file leaf-file-name="gvg.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gvg.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1100">
-              <caret line="454" column="12" selection-start-line="454" selection-start-column="12" selection-end-line="454" selection-end-column="12" />
+            <state relative-caret-position="878">
+              <caret line="250" column="135" selection-start-line="250" selection-start-column="90" selection-end-line="250" selection-end-column="135" />
             </state>
           </provider>
         </entry>
@@ -161,9 +134,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>input_cloud</find>
-      <find>read_cloud_process</find>
-      <find>64</find>
       <find>nor</find>
       <find>freespace_obstacle_split</find>
       <find>map_ob</find>
@@ -191,6 +161,9 @@
       <find>result_cluster</find>
       <find>k</find>
       <find>cluster</find>
+      <find>output_img</find>
+      <find>on_line</find>
+      <find>final</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -202,10 +175,10 @@
         <option value="$USER_HOME$/git/ring_buffer/ewok_ring_buffer/include/ewok/ed_nor_ring_buffer.h" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/include/cloud_filter.h" />
+        <option value="$PROJECT_DIR$/src/cloud_node.cpp" />
+        <option value="$PROJECT_DIR$/src/gvg.cpp" />
         <option value="$PROJECT_DIR$/include/gvg.h" />
         <option value="$PROJECT_DIR$/src/cloud_filter.cpp" />
-        <option value="$PROJECT_DIR$/src/gvg.cpp" />
-        <option value="$PROJECT_DIR$/src/cloud_node.cpp" />
       </list>
     </option>
   </component>
@@ -262,6 +235,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file:///home/clarence/catkin_ws/src/local_map/include/gvg.h" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../build/clion" />
     <property name="settings.editor.selected.configurable" value="preferences.editor" />
@@ -377,12 +351,13 @@
       <workItem from="1528427033991" duration="172000" />
       <workItem from="1528595909749" duration="11830000" />
       <workItem from="1528680986590" duration="11716000" />
-      <workItem from="1528713525664" duration="1904000" />
+      <workItem from="1528713525664" duration="3093000" />
+      <workItem from="1528766687889" duration="9396000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="242293000" />
+    <option name="totallyTimeSpent" value="252878000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="64" y="-11" width="1017" height="1932" extended-state="6" />
@@ -390,11 +365,11 @@
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.03448276" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.45812806" weight="0.12444934" />
+      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.4315271" weight="0.12444934" />
       <window_info anchor="bottom" id="CMake" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.38325122" side_tool="true" visible="true" weight="0.1222467" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.4098522" side_tool="true" visible="true" weight="0.1222467" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.61674875" visible="true" weight="0.1222467" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.5901478" visible="true" weight="0.1222467" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -770,37 +745,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/gvg.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="878">
+          <caret line="250" column="135" selection-start-line="250" selection-start-column="90" selection-end-line="250" selection-end-column="135" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/include/gvg.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="550">
-          <caret line="25" column="110" selection-start-line="25" selection-start-column="110" selection-end-line="25" selection-end-column="110" />
+          <caret line="25" column="134" selection-start-line="25" selection-start-column="134" selection-end-line="25" selection-end-column="134" />
           <folding>
             <element signature="e#91#129#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
+    <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="682">
-          <caret line="612" column="74" selection-start-line="612" selection-start-column="74" selection-end-line="612" selection-end-column="74" />
+        <state relative-caret-position="1168">
+          <caret line="153" column="107" selection-start-line="153" selection-start-column="107" selection-end-line="153" selection-end-column="107" />
           <folding>
             <element signature="e#42#78#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gvg.cpp">
+    <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1100">
-          <caret line="454" column="12" selection-start-line="454" selection-start-column="12" selection-end-line="454" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1122">
-          <caret line="153" column="107" selection-start-line="153" selection-start-column="107" selection-end-line="153" selection-end-column="107" />
+        <state relative-caret-position="858">
+          <caret line="614" column="90" selection-start-line="614" selection-start-column="90" selection-end-line="614" selection-end-column="90" />
           <folding>
             <element signature="e#42#78#0" expanded="true" />
           </folding>

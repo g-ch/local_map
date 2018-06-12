@@ -248,7 +248,7 @@ void GVG::cluster_filter(cv::Mat &map, cv::Mat &tangent_map, cv::Mat &restructur
 }
 
 
-cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> &cluster, int min_line_length, float max_dist_error, float max_slope_error)
+cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> &cluster, std::vector<cv::Point> &base_point_candidates, int min_line_length, float max_dist_error, float max_slope_error)
 {
     /// This will restructure the area with the clusters and valid area
     cv::Mat output_img(area_map.rows, area_map.cols, CV_8UC1, cv::Scalar(0));
@@ -263,9 +263,6 @@ cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> 
     std::vector<std::vector<cv::Point>> artificial_clusters;
     std::vector<cv::Vec4f> line_para_clusters;
     std::vector<std::vector<cv::Point>> end_points_clusters;
-
-    cv::namedWindow("TEST");
-
 
     /// Now we fit all the points in each cluster to a line
     for(int i=0; i<cluster.size(); i++)
@@ -288,17 +285,18 @@ cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> 
         }
 
     }
-
-    /// For debug
-    cv::Mat test_img = output_img.clone();
-    for(int i = 0; i < end_points_clusters.size(); i++)
-    {
-        cout<<"final cluster = "<< end_points_clusters[i][0] << ", "<<end_points_clusters[i][1] << endl;
-        cv::line(test_img, end_points_clusters[i][0], end_points_clusters[i][1], cv::Scalar(255), 2);
-    }
-    cv::imshow("TEST", test_img);
-    cv::waitKey();
-    /// End of debug code
+//
+//    /// For debug
+//    cv::namedWindow("TEST");
+//    cv::Mat test_img = output_img.clone();
+//    for(int i = 0; i < end_points_clusters.size(); i++)
+//    {
+//        cout<<"final cluster = "<< end_points_clusters[i][0] << ", "<<end_points_clusters[i][1] << endl;
+//        cv::line(test_img, end_points_clusters[i][0], end_points_clusters[i][1], cv::Scalar(255), 2);
+//    }
+//    cv::imshow("TEST", test_img);
+//    cv::waitKey();
+//    /// End of debug code
 
     cout<<"end_points_clusters=" << end_points_clusters.size()<<endl;
 //    for(int i = 0; i < end_points_clusters.size(); i++)
@@ -418,16 +416,16 @@ cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> 
                 cluster.insert(cluster.begin()+k-1, cluster_merged);
 
 
-                /// For debug
-                cv::Mat test_img = output_img.clone();
-                for(int i = 0; i < end_points_clusters.size(); i++)
-                {
-                    cout<<"final cluster = "<< end_points_clusters[i][0] << ", "<<end_points_clusters[i][1] << endl;
-                    cv::line(test_img, end_points_clusters[i][0], end_points_clusters[i][1], cv::Scalar(255), 2);
-                }
-                cv::imshow("TEST", test_img);
-                cv::waitKey();
-                /// End of debug code
+//                /// For debug
+//                cv::Mat test_img = output_img.clone();
+//                for(int i = 0; i < end_points_clusters.size(); i++)
+//                {
+//                    cout<<"final cluster = "<< end_points_clusters[i][0] << ", "<<end_points_clusters[i][1] << endl;
+//                    cv::line(test_img, end_points_clusters[i][0], end_points_clusters[i][1], cv::Scalar(255), 2);
+//                }
+//                cv::imshow("TEST", test_img);
+//                cv::waitKey();
+//                /// End of debug code
 
 
                 /// For next loop
@@ -437,9 +435,7 @@ cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> 
 
             }
 
-
-
-            cout<<"Merge condition: "<<dist_check_passed<<", "<<slope_check_passed<<endl;
+            // cout<<"Merge condition: "<<dist_check_passed<<", "<<slope_check_passed<<endl;
         }
     }
 
@@ -447,18 +443,153 @@ cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> 
 
     cout<<"end_points_clusters=" << end_points_clusters.size()<<endl;
 
+    /// To remove short lines and find cross points of long lines
     float length_threshold = min_line_length * min_line_length;
+    cv::Mat find_base_img(area_map.rows, area_map.cols, CV_8UC1, cv::Scalar(0));
+
     for(int i = 0; i < end_points_clusters.size(); i++)
     {
         cout<<"final cluster = "<< end_points_clusters[i][0] << ", "<<end_points_clusters[i][1] << endl;
+        ///NOTE: Here we just add intensity. Hope there would not be more than 25 lines cross in one point(nearly impossible)
         if(point_sqr_dist(end_points_clusters[i][0], end_points_clusters[i][1]) > length_threshold)
-            cv::line(output_img, end_points_clusters[i][0], end_points_clusters[i][1], cv::Scalar(255), 2);
+        {
+            cv::Mat temp_img(area_map.rows, area_map.cols, CV_8UC1, cv::Scalar(0));
+            cv::line(temp_img, end_points_clusters[i][0], end_points_clusters[i][1], cv::Scalar(10), 1); /// Note: line width should be 1
+            find_base_img = find_base_img + temp_img;
+        }
+        else
+        {
+            end_points_clusters.erase(end_points_clusters.begin() + i);
+            cluster.erase(cluster.begin() + i);
+        }
     }
 
+
+    /// To find base points(cross point of two lines)
+    for(int i = 0; i < find_base_img.rows; i++)
+    {
+        for(int j = 0; j < find_base_img.cols; j++)
+        {
+            if(find_base_img.ptr<unsigned char>(i)[j] > 10)
+            {
+                cv::Point temp_point;
+                temp_point.x = j;
+                temp_point.y = i;
+                base_point_candidates.push_back(temp_point);
+            }
+        }
+    }
+
+//    cv::Point p1, p2, p3, p4, p5;
+//    p1.x = 1; p1.y =2;
+//    p2.x = 14; p2.y = 28;
+//    p3.x = 6; p3.y = 12;
+//    p4.x = 6; p4.y = 13;
+//    p5.x = 6; p5.y = 14;
+//    cout<<" on line "<< on_line(p1, p2, p3) <<  on_line(p1, p2, p4) <<  on_line(p1, p2, p5) << endl;
+//    cout<<" along "<< along_direction(p1, p2, p3) <<  along_direction(p1, p4, p2) <<  along_direction(p3, p2, p1) << endl;
+
+    /// To cut useless extensive line of each cluster from base points
+    if(base_point_candidates.size() > 0)
+    {
+        for(int j = 0; j < end_points_clusters.size(); j++)
+        {
+            for(int i = 0; i < base_point_candidates.size(); i++)
+            {
+                if(on_line(end_points_clusters[j][0], end_points_clusters[j][1], base_point_candidates[i]))
+                {
+                    /// Judge if there is any voronoi point on one side of the base point. If not, delete the line on that side.
+                    bool end0_valid = false;
+                    bool end1_valid = false;
+                    for(int m = 0; m < cluster[j].size(); m++)
+                    {
+                        if(!end0_valid)
+                        {
+                            if(along_direction(base_point_candidates[i], end_points_clusters[j][0], cluster[j][m]))
+                                end0_valid = true;
+                        }
+
+                        if(!end1_valid)
+                        {
+                            if(along_direction(base_point_candidates[i], end_points_clusters[j][1], cluster[j][m]))
+                                end1_valid = true;
+                        }
+                        if(end0_valid && end1_valid) break;
+                    }
+                    cout<<"valid result = " << end0_valid << end1_valid << endl;
+                    /// Now delete, namely use base point to replace the end point
+                    if(!end0_valid) end_points_clusters[j][0] = base_point_candidates[i];
+                    if(!end1_valid) end_points_clusters[j][1] = base_point_candidates[i];
+                }
+            }
+        }
+    }
+    /// else if no cross points, define the line point closest to center as base point
+    else
+    {
+
+        cv::Point center;
+        center.x = output_img.cols / 2;
+        center.y = output_img.rows / 2;
+
+        for(int i=0; i<end_points_clusters.size(); i++)
+        {
+            float dist_min = 100000.f;
+            cv::Point closest_point;
+
+            for(int j=0; j<cluster[i].size(); j++)
+            {
+                float dist_temp = point_sqr_dist(center, cluster[i][j]);
+                if(dist_temp < dist_min)
+                {
+                    dist_min = dist_temp;
+                    closest_point = cluster[i][j];
+                }
+            }
+            base_point_candidates.push_back(closest_point);
+        }
+    }
+
+
+    /// To draw output img
+    for(int i = 0; i < end_points_clusters.size(); i++)
+    {
+        cv::line(output_img, end_points_clusters[i][0], end_points_clusters[i][1], cv::Scalar(255), 1);
+    }
+    for(int j = 0; j < base_point_candidates.size(); j++)
+    {
+        cv::line(output_img, base_point_candidates[j], base_point_candidates[j], cv::Scalar(100), 2);
+    }
 
     return output_img;
 }
 
+
+void GVG::find_gateway(cv::Mat &restructured_map, std::vector<cv::Point> &base_points, std::vector<std::vector<cv::Point>> &direction_points)
+{
+
+}
+
+
+bool GVG::on_line(cv::Point line_a, cv::Point line_b, cv::Point p)
+{
+    float line_length = sqrt((line_a.x - line_b.x)*(line_a.x - line_b.x) + (line_a.y - line_b.y)*(line_a.y - line_b.y));
+    float dist_sqr = point_to_line_sqr_dist(line_a, line_b, p, line_length);
+    cout<<"dist_sqr" << dist_sqr <<endl;
+    if(dist_sqr > 1) return false;
+    else return true;
+}
+
+bool GVG::along_direction(cv::Point base_p, cv::Point direct_p, cv::Point input_p)
+{
+    int v1_x = direct_p.x - base_p.x;
+    int v1_y = direct_p.y - base_p.y;
+    int v2_x = input_p.x - base_p.x;
+    int v2_y = input_p.y - base_p.y;
+    int result = v1_x*v2_x + v1_y*v2_y;
+    if(result < 0) return false;
+    else return true;
+}
 
 bool GVG::in_mat_range(cv::Point &p, cv::Mat &area_map, int shrink_size)
 {
