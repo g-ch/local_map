@@ -15,7 +15,7 @@ public:
     GVG();
     ~GVG();
 
-    void voronoi(cv::Mat &img);
+    void voronoi(cv::Mat &img, std::vector<cv::Point2f> &obstacle_points);
 
     void cluster_filter(cv::Mat &map, cv::Mat &tangent_map, cv::Mat &restructured_map, std::vector<std::vector<cv::Point>> &result_cluster, int min_points, float radius, float threshold);
 
@@ -23,9 +23,9 @@ public:
 
     cv::Mat tangent_vector(cv::Mat &input_img, int window_size, float fit_threshold = 100.f);
 
-    cv::Mat restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> &cluster, std::vector<cv::Point> &base_point_candidates, int min_line_length, float max_dist, float max_slope_error); /// max_slope_error < 1.0
+    cv::Mat restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> &cluster, std::vector<cv::Point> &base_point_candidates, std::vector<std::vector<cv::Point>> &branch_points_final, int min_line_length, float max_dist, float max_slope_error); /// max_slope_error < 1.0
 
-    void find_gateway(cv::Mat &restructured_map, std::vector<cv::Point> &base_points, std::vector<std::vector<cv::Point>> &direction_points);
+    void find_gateway(std::vector<cv::Point2f> &obstacle_points, std::vector<cv::Point> &base_points, std::vector<std::vector<cv::Point>> &branch_points, std::vector<std::vector<cv::Point>> &direction_points);
 
 private:
     float point_sqr_dist(cv::Point &p1, cv::Point &p2);
@@ -45,6 +45,10 @@ private:
     bool on_line(cv::Point line_a, cv::Point line_b, cv::Point p);
 
     bool along_direction(cv::Point base_p, cv::Point direct_p, cv::Point input_p);
+
+    bool line_intersection(cv::Point p1, cv::Point p2, cv::Point q1, cv::Point q2, cv::Point &intersection);
+
+    cv::Point pedal_point(cv::Point line_a, cv::Point line_b, cv::Point p);
 };
 
 #endif //LOCAL_MAP_GVG_H

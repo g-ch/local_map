@@ -555,28 +555,30 @@ void CloudProcess::two_dimension_map_generate()
     }
     map_intensity = map.clone();
 
-    /// Intensity filter
+    /// 1. Intensity filter
     map = map > 200;
 
-    /// Erode and dilate
+    /// 2. Erode and dilate
     cv::Mat map_eroded = map.clone();
     cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5));
     cv::erode(map, map_eroded, element); //Opening operation
     cv::dilate(map_eroded, map_eroded, element);
 
 
-    /// Flood fill to keep only one connected region
+    /// 3. Flood fill to keep only one connected region
     cv::floodFill(map_eroded, cv::Point(length/2-1, length/2-1), cv::Scalar(100), 0, cv::Scalar(10), cv::Scalar(10), 8); /// Square area
     map_eroded = map_eroded == 100;
 
-    /// Remove small black pieces inside. Might be obstacles like pedestrians
+    /// 4. Remove small black pieces inside. Might be obstacles like pedestrians
     cv::Mat element2 = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5));
     cv::dilate(map_eroded, map_eroded, element); /// Closing operation
     cv::erode(map_eroded, map_eroded, element);
 
+    /// 5. Voronoi diagram
     cv::Mat voronoi_map = map_eroded.clone();
+    std::vector<cv::Point2f> obstacle_points;
     GVG gvg;
-    gvg.voronoi(voronoi_map);
+    gvg.voronoi(voronoi_map, obstacle_points);
 
     cv::Mat generalized_voronoi_map(length, length, CV_8UC1, cv::Scalar(0));
 
@@ -593,6 +595,7 @@ void CloudProcess::two_dimension_map_generate()
         }
     }
 
+    /// 6. Cluster
     cv::Mat tangent_map = gvg.tangent_vector(generalized_voronoi_map, 2, 10);
     cv::Mat cluster_origin_map = cv::Mat::zeros(length, length, CV_8UC1);
     std::vector<std::vector<cv::Point>> clusters;
@@ -611,8 +614,15 @@ void CloudProcess::two_dimension_map_generate()
         }
     }
 
+    /// 7. Restructure
     std::vector<cv::Point> base_point_candidates;
-    cv::Mat restructured_map = gvg.restructure(map_eroded, clusters, base_point_candidates, 20, 4, 0.1);
+    std::vector<std::vector<cv::Point>> branch_points;
+    cv::Mat restructured_map = gvg.restructure(map_eroded, clusters, base_point_candidates, branch_points, 20, 4, 0.1);
+
+    /// 8. Find gateway
+    std::vector<std::vector<cv::Point>> direction_points; /// The results
+    gvg.find_gateway(obstacle_points, base_point_candidates, branch_points, direction_points);
+
 
 //    /// For testing the effect of finding polygon contour to pre-process
 //    vector<vector<Point>> contours;
@@ -628,9 +638,9 @@ void CloudProcess::two_dimension_map_generate()
 //    }
 
 
-
     //gvg.thinning(generalized_voronoi_map);
 
+    ///Just to show tangent map in a visible way
     cv::Mat tangent_show_img(length, length, CV_8UC1, cv::Scalar(0));
     for(int i=0; i < tangent_show_img.rows; i++)
     {
