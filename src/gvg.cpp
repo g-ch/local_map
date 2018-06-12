@@ -518,7 +518,7 @@ cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> 
     }
 
 
-    cout<<"base_point_candidates size="<<base_point_candidates.size()<<endl;
+
 //    cv::Point p1, p2, p3, p4, p5;
 //    p1.x = 1; p1.y =2;
 //    p2.x = 14; p2.y = 28;
@@ -597,12 +597,10 @@ cv::Mat GVG::restructure(cv::Mat &area_map, std::vector<std::vector<cv::Point>> 
 
 
     /// To draw output img
-//    for(int i = 0; i < end_points_clusters.size(); i++)
-//    {
-//        cv::line(output_img, end_points_clusters[i][0], end_points_clusters[i][1], cv::Scalar(255), 1);
-//    }
+    cout<<"base_point_candidates size="<<base_point_candidates.size()<<endl;
     for(int j = 0; j < base_point_candidates.size(); j++)
     {
+        cout<<"branch_points_final size="<<branch_points_final[j].size()<<endl;
         for(int i = 0; i < branch_points_final[j].size(); i++)
         {
             cv::line(output_img, branch_points_final[j][i], base_point_candidates[j], cv::Scalar(255), 2);
