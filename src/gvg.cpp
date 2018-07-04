@@ -1095,8 +1095,8 @@ void GVG::thinning(cv::Mat &img)
             int i = contours[0][k].y;
             int j = contours[0][k].x;
 
-            if(i == 0 || i == img.rows - 1 ||  j == 0 || j == img.cols - 1)
-                continue;
+//            if(i == 0 || i == img.rows - 1 ||  j == 0 || j == img.cols - 1)
+//                continue;
 
             int neighbour[8];
             neighbour[0] = (img.ptr<unsigned char>(i-1)[j] > 0)? 1:0;
@@ -1107,6 +1107,62 @@ void GVG::thinning(cv::Mat &img)
             neighbour[5] = (img.ptr<unsigned char>(i+1)[j-1] > 0)? 1:0;
             neighbour[6] = (img.ptr<unsigned char>(i)[j-1] > 0)? 1:0;
             neighbour[7] = (img.ptr<unsigned char>(i-1)[j-1] > 0)? 1:0;
+
+            /// Now consider border
+//            if(i == 0)
+//            {
+//                neighbour[0] = 0;
+//                neighbour[1] = 0;
+//                neighbour[7] = 0;
+//            }
+//            else if(i == img.rows - 1)
+//            {
+//                neighbour[3] = 0;
+//                neighbour[4] = 0;
+//                neighbour[5] = 0;
+//            }
+//
+//            if(j == 0)
+//            {
+//                neighbour[5] = 0;
+//                neighbour[6] = 0;
+//                neighbour[7] = 0;
+//            }
+//            else if(j == img.cols - 1)
+//            {
+//                neighbour[1] = 0;
+//                neighbour[2] = 0;
+//                neighbour[3] = 0;
+//            }
+
+            if(i == 0)
+            {
+                neighbour[0] = 1;
+                neighbour[1] = 1;
+                neighbour[7] = 1;
+            }
+            else if(i == img.rows - 1)
+            {
+                neighbour[3] = 1;
+                neighbour[4] = 1;
+                neighbour[5] = 1;
+            }
+
+            if(j == 0)
+            {
+                neighbour[5] = 1;
+                neighbour[6] = 1;
+                neighbour[7] = 1;
+            }
+            else if(j == img.cols - 1)
+            {
+                neighbour[1] = 1;
+                neighbour[2] = 1;
+                neighbour[3] = 1;
+            }
+
+
+            /// Count
             int bp1 = neighbour[0] + neighbour[1] + neighbour[2] + neighbour[3] + neighbour[4] + neighbour[5] + neighbour[6] + neighbour[7];
             int ap1 = 0;
             for(int m=0; m<7; m++)
@@ -1128,8 +1184,8 @@ void GVG::thinning(cv::Mat &img)
             int i = contours[0][k].y;
             int j = contours[0][k].x;
 
-            if(i == 0 || i == img.rows - 1 ||  j == 0 || j == img.cols - 1)
-                continue;
+//            if(i == 0 || i == img.rows - 1 ||  j == 0 || j == img.cols - 1)
+//                continue;
 
             int neighbour[8];
             neighbour[0] = (img.ptr<unsigned char>(i-1)[j] > 0)? 1:0;
@@ -1140,6 +1196,61 @@ void GVG::thinning(cv::Mat &img)
             neighbour[5] = (img.ptr<unsigned char>(i+1)[j-1] > 0)? 1:0;
             neighbour[6] = (img.ptr<unsigned char>(i)[j-1] > 0)? 1:0;
             neighbour[7] = (img.ptr<unsigned char>(i-1)[j-1] > 0)? 1:0;
+
+            /// Now consider border
+//            if(i == 0)
+//            {
+//                neighbour[0] = 0;
+//                neighbour[1] = 0;
+//                neighbour[7] = 0;
+//            }
+//            else if(i == img.rows - 1)
+//            {
+//                neighbour[3] = 0;
+//                neighbour[4] = 0;
+//                neighbour[5] = 0;
+//            }
+//
+//            if(j == 0)
+//            {
+//                neighbour[5] = 0;
+//                neighbour[6] = 0;
+//                neighbour[7] = 0;
+//            }
+//            else if(j == img.cols - 1)
+//            {
+//                neighbour[1] = 0;
+//                neighbour[2] = 0;
+//                neighbour[3] = 0;
+//            }
+
+            if(i == 0)
+            {
+                neighbour[0] = 1;
+                neighbour[1] = 1;
+                neighbour[7] = 1;
+            }
+            else if(i == img.rows - 1)
+            {
+                neighbour[3] = 1;
+                neighbour[4] = 1;
+                neighbour[5] = 1;
+            }
+
+            if(j == 0)
+            {
+                neighbour[5] = 1;
+                neighbour[6] = 1;
+                neighbour[7] = 1;
+            }
+            else if(j == img.cols - 1)
+            {
+                neighbour[1] = 1;
+                neighbour[2] = 1;
+                neighbour[3] = 1;
+            }
+
+            /// Count
             int bp1 = neighbour[0] + neighbour[1] + neighbour[2] + neighbour[3] + neighbour[4] + neighbour[5] + neighbour[6] + neighbour[7];
             int ap1 = 0;
             for(int m=0; m<7; m++)

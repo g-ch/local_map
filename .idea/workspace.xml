@@ -48,34 +48,9 @@
     <list default="true" id="369fccf7-5c59-4cb9-95ca-59a8fe7e42e5" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/cluster_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/cluster_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Original/generalized_voronoi_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/generalized_voronoi_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Original/map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/map.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/map_eroded.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/map_eroded.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Original/map_intensity.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/map_intensity.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Original/restructured_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/restructured_map.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/Original/tangent_show_img.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/tangent_show_img.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/Original/voronoi_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/Original/voronoi_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-01-02/cluster_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-01-02/cluster_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-01-02/generalized_voronoi_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-01-02/generalized_voronoi_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-01-02/map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-01-02/map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-01-02/map_eroded.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-01-02/map_eroded.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-01-02/map_intensity.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-01-02/map_intensity.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-01-02/restructured_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-01-02/restructured_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-01-02/tangent_show_img.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-01-02/tangent_show_img.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-01-02/voronoi_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-01-02/voronoi_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-02/restructured_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-02/restructured_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-02/tangent_show_img.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-02/tangent_show_img.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-03/restructured_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-03/restructured_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/hall-03/tangent_show_img.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/hall-03/tangent_show_img.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/intersection-01/cluster_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/intersection-01/cluster_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/intersection-01/restructured_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/intersection-01/restructured_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/intersection-01/tangent_show_img.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/intersection-01/tangent_show_img.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/intersection-02/restructured_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/intersection-02/restructured_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/intersection-02/tangent_show_img.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/intersection-02/tangent_show_img.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/intersection-03/cluster_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/intersection-03/cluster_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/intersection-03/restructured_map.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/intersection-03/restructured_map.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/intersection-03/tangent_show_img.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/data/intersection-03/tangent_show_img.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cloud_node.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cloud_node.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/cloud_filter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/cloud_filter.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gvg.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/gvg.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -102,11 +77,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="cloud_filter.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="cloud_filter.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="42">
-              <caret line="572" selection-start-line="572" selection-end-line="574" selection-end-column="47" />
+            <state relative-caret-position="218">
+              <caret line="640" column="6" selection-start-line="640" selection-start-column="6" selection-end-line="640" selection-end-column="6" />
               <folding>
                 <element signature="e#42#78#0" expanded="true" />
               </folding>
@@ -126,11 +101,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gvg.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="gvg.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gvg.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="800">
-              <caret line="602" column="79" lean-forward="true" selection-start-line="602" selection-start-column="79" selection-end-line="602" selection-end-column="79" />
+            <state relative-caret-position="195">
+              <caret line="1251" selection-start-line="1251" selection-end-line="1251" />
             </state>
           </provider>
         </entry>
@@ -138,7 +113,7 @@
       <file leaf-file-name="cloud_node.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1122">
+            <state relative-caret-position="1473">
               <caret line="153" column="107" selection-start-line="153" selection-start-column="107" selection-end-line="153" selection-end-column="107" />
               <folding>
                 <element signature="e#42#78#0" expanded="true" />
@@ -193,9 +168,9 @@
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/include/cloud_filter.h" />
         <option value="$PROJECT_DIR$/include/gvg.h" />
-        <option value="$PROJECT_DIR$/src/cloud_filter.cpp" />
         <option value="$PROJECT_DIR$/src/cloud_node.cpp" />
         <option value="$PROJECT_DIR$/src/gvg.cpp" />
+        <option value="$PROJECT_DIR$/src/cloud_filter.cpp" />
       </list>
     </option>
   </component>
@@ -220,6 +195,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -248,7 +224,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -369,24 +344,26 @@
       <workItem from="1528595909749" duration="11830000" />
       <workItem from="1528680986590" duration="11716000" />
       <workItem from="1528713525664" duration="3093000" />
-      <workItem from="1528766687889" duration="22156000" />
+      <workItem from="1528766687889" duration="22276000" />
+      <workItem from="1528881074629" duration="248000" />
+      <workItem from="1528881342438" duration="7000" />
+      <workItem from="1529302695828" duration="1740000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="265638000" />
+    <option name="totallyTimeSpent" value="267753000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-11" width="1017" height="1932" extended-state="6" />
-    <editor active="true" />
+    <frame x="64" y="-11" width="1857" height="1092" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.03448276" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.033962265" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.40197045" weight="0.12444934" />
+      <window_info anchor="bottom" id="Messages" order="7" sideWeight="0.3962264" weight="0.34528688" />
       <window_info anchor="bottom" id="CMake" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.43940887" side_tool="true" visible="true" weight="0.1222467" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.44528303" side_tool="true" visible="true" weight="0.34528688" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.56059116" visible="true" weight="0.1222467" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.554717" weight="0.12192623" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -772,19 +749,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="572" selection-start-line="572" selection-end-line="574" selection-end-column="47" />
-          <folding>
-            <element signature="e#42#78#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/cloud_node.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1122">
+        <state relative-caret-position="1473">
           <caret line="153" column="107" selection-start-line="153" selection-start-column="107" selection-end-line="153" selection-end-column="107" />
           <folding>
             <element signature="e#42#78#0" expanded="true" />
@@ -794,8 +761,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/gvg.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="800">
-          <caret line="602" column="79" lean-forward="true" selection-start-line="602" selection-start-column="79" selection-end-line="602" selection-end-column="79" />
+        <state relative-caret-position="195">
+          <caret line="1251" selection-start-line="1251" selection-end-line="1251" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cloud_filter.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="218">
+          <caret line="640" column="6" selection-start-line="640" selection-start-column="6" selection-end-line="640" selection-end-column="6" />
+          <folding>
+            <element signature="e#42#78#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

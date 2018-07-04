@@ -638,7 +638,7 @@ void CloudProcess::two_dimension_map_generate()
 //    }
 
 
-    //gvg.thinning(generalized_voronoi_map);
+    //gvg.thinning(map_eroded);
 
     ///Just to show tangent map in a visible way
     cv::Mat tangent_show_img(length, length, CV_8UC1, cv::Scalar(0));
