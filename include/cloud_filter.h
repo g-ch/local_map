@@ -49,6 +49,7 @@ public:
      */
     void process_cloud_all();
 
+
     /**
     * To split free space and obstacle PointXYZ cloud from input PointXYZI cloud, judging by intensity
     * @param cloud

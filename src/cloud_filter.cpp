@@ -99,7 +99,7 @@ void CloudProcess::filter_process()
     std::cout<<"start process"<<std::endl;
 
     input_cloud_ptr = input_cloud.makeShared();
-    std::cout<<"input_cloud"<<std::endl<<input_cloud<<std::endl;
+    //std::cout<<"input_cloud"<<std::endl<<input_cloud<<std::endl;
 
     /// Definition of cloud with normals, will be calculated either in
     pcl::PointCloud<pcl::PointNormal>::Ptr cloud_with_normals (new pcl::PointCloud<pcl::PointNormal>);
@@ -119,7 +119,7 @@ void CloudProcess::filter_process()
         vg.setInputCloud (input_cloud_ptr);
         vg.setLeafSize (vg_f.Leaf_X, vg_f.Leaf_Y, vg_f.Leaf_Z);
         vg.filter (output_cloud);
-        std::cout<<"VoxelGrid filter"<<std::endl<<output_cloud<<std::endl;
+        //std::cout<<"VoxelGrid filter"<<std::endl<<output_cloud<<std::endl;
     } else
     {
         pcl::copyPointCloud(input_cloud, output_cloud);
@@ -134,7 +134,7 @@ void CloudProcess::filter_process()
         sor.setMeanK (sor_f.Mean_K);
         sor.setStddevMulThresh (sor_f.Stddev_Mul_Thresh);
         sor.filter (output_cloud);
-        std::cout<<"Statistical Outlier Removal"<<std::endl<<output_cloud<<std::endl;
+        //std::cout<<"Statistical Outlier Removal"<<std::endl<<output_cloud<<std::endl;
     }
 
     /// Moving_Least_Squares_Reconstruction, to homogenize, will cut number
@@ -160,10 +160,10 @@ void CloudProcess::filter_process()
         /// Reconstruct
         mls.process (mls_points);
 
-        std::cout<<"Voxel Size "<< mls.getDilationVoxelSize()<<std::endl;
-        std::cout<<"Iterations "<< mls.getDilationIterations()<<std::endl;
+        //std::cout<<"Voxel Size "<< mls.getDilationVoxelSize()<<std::endl;
+        //std::cout<<"Iterations "<< mls.getDilationIterations()<<std::endl;
         pcl::copyPointCloud(mls_points, output_cloud);
-        std::cout<<"Moving_Least_Squares_Reconstruction"<<std::endl<<output_cloud<<std::endl;
+        //std::cout<<"Moving_Least_Squares_Reconstruction"<<std::endl<<output_cloud<<std::endl;
 
         /// NORMALS SET TO "normals" HERE
         normals->resize(mls_points.size());
@@ -204,7 +204,7 @@ void CloudProcess::filter_process()
         cec.setMaxClusterSize ((int)(cloud_with_normals->points.size () / ce_c.Point_Size_Max_Dividend));
         cec.segment (clusters);
 
-        std::cout<<clusters.size()<<std::endl;
+        //std::cout<<clusters.size()<<std::endl;
     }
 
     ///Region Growing Segmentation
@@ -240,12 +240,12 @@ void CloudProcess::filter_process()
                 number_of_valid_points += clusters[i].indices.size();
         }
 
-        std::cout << "Number of clusters is equal to " << clusters.size () << std::endl;
-        std::cout << "Number of valid points is equal to " << number_of_valid_points << std::endl;
-        std::cout << "First cluster has " << clusters[0].indices.size () << " points." << std::endl;
-        std::cout << "First point position x = " << output_cloud_ptr->points[clusters[0].indices[1]].x <<std::endl;
-        std::cout << "First point position y = " << output_cloud_ptr->points[clusters[0].indices[1]].y <<std::endl;
-        std::cout << "First point position z = " << output_cloud_ptr->points[clusters[0].indices[1]].z <<std::endl;
+        //std::cout << "Number of clusters is equal to " << clusters.size () << std::endl;
+        //std::cout << "Number of valid points is equal to " << number_of_valid_points << std::endl;
+        //std::cout << "First cluster has " << clusters[0].indices.size () << " points." << std::endl;
+        //std::cout << "First point position x = " << output_cloud_ptr->points[clusters[0].indices[1]].x <<std::endl;
+        //std::cout << "First point position y = " << output_cloud_ptr->points[clusters[0].indices[1]].y <<std::endl;
+        //std::cout << "First point position z = " << output_cloud_ptr->points[clusters[0].indices[1]].z <<std::endl;
     }
 
 
@@ -368,15 +368,15 @@ void CloudProcess::filter_process()
 
         space_height = roof_height - ground_height;
 
-        std::cout<<"space_height = " << space_height<<std::endl;
-        std::cout<<"roof_height = " << roof_height<<std::endl;
-        std::cout<<"ground_height = " << ground_height<<std::endl;
-        std::cout<<"Space type = (vertical, horizontal) = (" << vertical_structure_type <<", "<< horizontal_structure_type <<")"<< std::endl;
+        //std::cout<<"space_height = " << space_height<<std::endl;
+        //std::cout<<"roof_height = " << roof_height<<std::endl;
+        //std::cout<<"ground_height = " << ground_height<<std::endl;
+        //std::cout<<"Space type = (vertical, horizontal) = (" << vertical_structure_type <<", "<< horizontal_structure_type <<")"<< std::endl;
 
     }
 
     std::cout<<"Process finished"<<std::endl;
-    std::cout<<output_cloud<<std::endl;
+    //std::cout<<output_cloud<<std::endl;
 }
 
 
@@ -417,12 +417,13 @@ void CloudProcess::process_cloud_all()
     two_dimension_map_generate();
 }
 
+
 void CloudProcess::two_dimension_map_generate()
 {
     /// NOTE: x, y, z values in "input_cloud_all" should all be with in [0, Area_Length]
     ///       if not, please transform the coordinate by cutting the center position, where the robot is.
     int length = (int) (Area_Length / Voxel_Length);
-    std::cout << "***Length = " << length <<std::endl;
+    //std::cout << "***Length = " << length <<std::endl;
 
     /// Initialize maps
     map = cv::Mat::zeros(length, length, CV_8UC1);
@@ -434,6 +435,8 @@ void CloudProcess::two_dimension_map_generate()
     std::vector<std::vector<float>> map_fs_ratio;
 
     input_cloud_all_ptr = input_cloud_all.makeShared();
+
+    cout<<"input_cloud_all size: "<<input_cloud_all.width<<endl;
 
     /// Find roof and ground height
     int number_bound = (int) (pow(valid_fspoints_search_radius, 3) * 4.2 / pow(Voxel_Length, 3) * 0.4); ///limitation set by volume
@@ -555,28 +558,30 @@ void CloudProcess::two_dimension_map_generate()
     }
     map_intensity = map.clone();
 
-    /// Intensity filter
+    /// 1. Intensity filter
     map = map > 200;
 
-    /// Erode and dilate
+    /// 2. Erode and dilate
     cv::Mat map_eroded = map.clone();
     cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5));
     cv::erode(map, map_eroded, element); //Opening operation
     cv::dilate(map_eroded, map_eroded, element);
 
 
-    /// Flood fill to keep only one connected region
+    /// 3. Flood fill to keep only one connected region
     cv::floodFill(map_eroded, cv::Point(length/2-1, length/2-1), cv::Scalar(100), 0, cv::Scalar(10), cv::Scalar(10), 8); /// Square area
     map_eroded = map_eroded == 100;
 
-    /// Remove small black pieces inside. Might be obstacles like pedestrians
+    /// 4. Remove small black pieces inside. Might be obstacles like pedestrians
     cv::Mat element2 = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5,5));
     cv::dilate(map_eroded, map_eroded, element); /// Closing operation
     cv::erode(map_eroded, map_eroded, element);
 
+    /// 5. Voronoi diagram
     cv::Mat voronoi_map = map_eroded.clone();
+    std::vector<cv::Point2f> obstacle_points;
     GVG gvg;
-    gvg.voronoi(voronoi_map);
+    gvg.voronoi(voronoi_map, obstacle_points);
 
     cv::Mat generalized_voronoi_map(length, length, CV_8UC1, cv::Scalar(0));
 
@@ -593,23 +598,34 @@ void CloudProcess::two_dimension_map_generate()
         }
     }
 
-    cv::Mat tangent_map = gvg.tangent_vector(generalized_voronoi_map, 3, 50);
-    cv::Mat restructured_map = cv::Mat::zeros(length, length, CV_8UC1);
+    /// 6. Cluster
+    cv::Mat tangent_map = gvg.tangent_vector(generalized_voronoi_map, 2, 10);
+    cv::Mat cluster_origin_map = cv::Mat::zeros(length, length, CV_8UC1);
     std::vector<std::vector<cv::Point>> clusters;
-    gvg.cluster_filter(generalized_voronoi_map, tangent_map, restructured_map, clusters, 3, 4, 0.3);
+    gvg.cluster_filter(generalized_voronoi_map, tangent_map, cluster_origin_map, clusters, 3, 4, 0.3);
 
     /// Just to show the clusters
     cv::Mat cluster_map(length, length, CV_8UC1, cv::Scalar(0));
     for(int i = 0; i<clusters.size(); i++)
     {
-        int color = rand() % 200 + 55;
+        //int color = rand() % 200 + 55;
+        int color = 50*(i+1);
         for(int j=0; j<clusters[i].size();j++)
         {
             //if(i == 0)
             cluster_map.ptr<unsigned char>(clusters[i][j].y)[clusters[i][j].x] = color;
         }
     }
-    cv::Mat final_map = gvg.restructure(map_eroded, clusters, 8, 0.5);
+
+    /// 7. Restructure
+    std::vector<cv::Point> base_point_candidates;
+    std::vector<std::vector<cv::Point>> branch_points;
+    cv::Mat restructured_map = gvg.restructure(map_eroded, clusters, base_point_candidates, branch_points, 20, 4, 0.1);
+
+    /// 8. Find gateway
+    std::vector<std::vector<cv::Point>> direction_points; /// The results
+    gvg.find_gateway(obstacle_points, base_point_candidates, branch_points, direction_points);
+
 
 //    /// For testing the effect of finding polygon contour to pre-process
 //    vector<vector<Point>> contours;
@@ -625,19 +641,31 @@ void CloudProcess::two_dimension_map_generate()
 //    }
 
 
-    //gvg.thinning(thinned_map);
+    //gvg.thinning(map_eroded);
+
+    ///Just to show tangent map in a visible way
+//    cv::Mat tangent_show_img(length, length, CV_8UC1, cv::Scalar(0));
+//    for(int i=0; i < tangent_show_img.rows; i++)
+//    {
+//        for(int j=0; j<tangent_show_img.cols; j++)
+//        {
+//            tangent_show_img.ptr<unsigned char>(i)[j] = (unsigned char)(tangent_map.ptr<float>(i)[j] * 255);
+//        }
+//    }
 
     /// Save and show
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map.jpg", map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_intensity.jpg", map_intensity);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/map_eroded.jpg", map_eroded);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/generalized_voronoi_map.jpg", generalized_voronoi_map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/voronoi_map.jpg", voronoi_map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/restructured_map.jpg", restructured_map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/cluster_map.jpg", cluster_map);
-    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/final_map.jpg", final_map);
+//    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/map.jpg", map);
+//    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/map_intensity.jpg", map_intensity);
+//    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/map_eroded.jpg", map_eroded);
+//    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/generalized_voronoi_map.jpg", generalized_voronoi_map);
+//    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/voronoi_map.jpg", voronoi_map);
+//    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/cluster_origin_map.jpg", cluster_origin_map);
+//    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/cluster_map.jpg", cluster_map);
+//    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/restructured_map.jpg", restructured_map);
+//    cv::imwrite("/home/clarence/catkin_ws/src/local_map/data/Original/tangent_show_img.jpg", tangent_show_img);
 
-    cv::waitKey(100);
+    cv::imshow("result", restructured_map);
+    cv::waitKey(5);
 }
 
 
